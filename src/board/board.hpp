@@ -26,6 +26,11 @@ class GameBoard {
 
     private:
 
+        uint64_t _white_pawns, _white_knights, _white_bishops, _white_rooks, _white_queens, _white_king;
+        uint64_t _black_pawns, _black_knights, _black_bishops, _black_rooks, _black_queens, _black_king;
+        uint64_t _all_white_pieces, _all_black_pieces;
+        uint64_t _all_pieces;
+
         /**
          * @brief Moves a piece on the board.
          *
@@ -47,14 +52,14 @@ class GameBoard {
          *
          * @param king The piece to move (a king).
          */
-        void kingside_castle(Piece *king);
+        void kingside_castle(Color side);
 
         /**
          * @brief Applies the queenside castle move to a piece.
          *
          * @param king The piece to move (a king).
          */
-        void queenside_castle(Piece *king);
+        void queenside_castle(Color side);
 
         /**
          * @brief Promotes a piece.
@@ -65,12 +70,10 @@ class GameBoard {
 
     public:
 
-        std::vector<std::vector<std::unique_ptr<Piece>>> _board;
-        King *_whiteKing;
-        King *_blackKing;
-
         GameBoard();
         GameBoard(const GameBoard&) = delete;
+
+        Color get_color_at(Square sq) const;
 
         /**
          * @brief Gets a piece on the game board.

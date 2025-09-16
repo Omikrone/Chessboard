@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "game/board/board.hpp"
+#include "board/board.hpp"
 #include "game/rules/move_validator.hpp"
 #include "game/rules/move_generator.hpp"
 #include "game/components/square.hpp"
@@ -17,7 +17,7 @@
  */
 class Game
 {
-    private: 
+    private:
       
         GameBoard _board;
         MoveValidator _moveValidator;

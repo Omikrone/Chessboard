@@ -1,73 +1,37 @@
 // board.cpp
 
-#include "game/board/board.hpp"
+#include "board/board.hpp"
 
 
 GameBoard::GameBoard()
 {
-    // Initializes the game board with the pieces
-    // TODO: simplify the method or create another class responsible for this
+    // Static initialization of white pieces
+    _white_pawns   = 0x000000000000FF00ULL;
+    _white_knights = 0x0000000000000042ULL;
+    _white_bishops = 0x0000000000000024ULL;
+    _white_rooks   = 0x0000000000000081ULL;
+    _white_queens   = 0x0000000000000008ULL;
+    _white_king    = 0x0000000000000010ULL;
 
-    _board.resize(BOARD_LENGTH); 
-    for (auto &row : _board) {
-        row.resize(BOARD_LENGTH);
-    }
+    // Static initialization of black pieces
+    _black_pawns   = 0x00FF000000000000ULL;
+    _black_knights = 0x4200000000000000ULL;
+    _black_bishops = 0x2400000000000000ULL;
+    _black_rooks   = 0x8100000000000000ULL;
+    _black_queens   = 0x0800000000000000ULL;
+    _black_king = 0x1000000000000000ULL;
 
-    // Pawns initialization
-    for (int8_t i = 0; i < BOARD_LENGTH; i++)
-    {
-        _board[1][i] = std::make_unique<Pawn>(PieceType::PAWN, Square{i, 1}, Color::WHITE);
-    }
-    for (int8_t i = 0; i < BOARD_LENGTH; i++)
-    {
-        _board[6][i] = std::make_unique<Pawn>(PieceType::PAWN, Square{i, 6}, Color::BLACK);
-    }
+    // Merge all pieces bitboards to constitue a color bitboard
+    _all_white_pieces = _white_pawns | _white_knights | _white_bishops | _white_rooks | _white_queens | _white_king;
+    _all_black_pieces = _black_pawns | _black_knights | _black_bishops | _black_rooks | _black_rooks | _black_king;
 
-    // Knights initialization
-    const Square knightPositions[] = {{1, 7}, {6, 7}, {6, 0}, {1, 0}};
-    for (int8_t i = 0; i < 4; i++) {
-        Square startPosition = {knightPositions[i].file, knightPositions[i].rank};
-        if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Knight>(PieceType::KNIGHT, startPosition, Color::BLACK);
-        }
-        else {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Knight>(PieceType::KNIGHT, startPosition, Color::WHITE);
-        }
-    }
+    _all_pieces = _all_white_pieces | _all_black_pieces;
+}
 
-    // Bishops initialization
-    const Square bishopPositions[] = {{2, 7}, {5, 7}, {5, 0}, {2, 0}};
-    for (int8_t i = 0; i < 4; i++) {
-        Square startPosition = {bishopPositions[i].file, bishopPositions[i].rank};
-        if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Bishop>(PieceType::BISHOP, startPosition, Color::BLACK);
-        }
-        else {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Bishop>(PieceType::BISHOP, startPosition, Color::WHITE);
-        }
-    }
 
-    // Rooks initialization
-    const Square rookPositions[] = {{0, 7}, {7, 7}, {7, 0}, {0, 0}};
-    for (int8_t i = 0; i < 4; i++) {
-        Square startPosition = {rookPositions[i].file, rookPositions[i].rank};
-        if (i < 2) {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Rook>(PieceType::ROOK, startPosition, Color::BLACK);
-        }
-        else {
-            _board[startPosition.rank][startPosition.file] = std::make_unique<Rook>(PieceType::ROOK, startPosition, Color::WHITE);
-        }
-    }
-    
-    // Queens initialization
-    _board[0][3] = std::make_unique<Queen>(PieceType::QUEEN, Square{3, 0}, Color::WHITE);
-    _board[7][3] = std::make_unique<Queen>(PieceType::QUEEN, Square{3, 7}, Color::BLACK);
-
-    // Kings initialization
-    _board[0][4] = std::make_unique<King>(PieceType::KING, Square{4, 0}, Color::WHITE);
-    _board[7][4] = std::make_unique<King>(PieceType::KING, Square{4, 7}, Color::BLACK);
-    _whiteKing = static_cast<King *>(_board[0][4].get());
-    _blackKing = static_cast<King *>(_board[7][4].get());
+Color GameBoard::get_color_at(Square sq) const {
+    if ((_all_white_pieces >> (sq.rank * 8 + sq.file)) & 1ULL) return Color::WHITE;
+    else return Color::BLACK;
 }
 
 
@@ -94,7 +58,7 @@ void GameBoard::make_move(const Move& move) {
             break;
 
         case MoveType::PROMOTION:
-            // TODO: Make othe promotion type (rook, ...) possible
+            // TODO: Make other promotion type (rook, ...) possible
             promotion(piece, PieceType::QUEEN);
             piece = get_piece_at(move.initPos);
             move_piece(move.initPos, move.destPos);
@@ -213,6 +177,7 @@ King &GameBoard::get_king(Color kingColor) {
 
 
 std::unique_ptr<GameBoard> GameBoard::clone() const {
+
     // Creates another blank game board
     std::unique_ptr<GameBoard> newBoard = std::make_unique<GameBoard>();
     newBoard->_board.resize(BOARD_LENGTH);
