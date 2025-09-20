@@ -5,38 +5,33 @@
 
 GameBoard::GameBoard()
 {
-    // Static initialization of white pieces
-    _white_pawns   = 0x000000000000FF00ULL;
-    _white_knights = 0x0000000000000042ULL;
-    _white_bishops = 0x0000000000000024ULL;
-    _white_rooks   = 0x0000000000000081ULL;
-    _white_queens   = 0x0000000000000008ULL;
-    _white_king    = 0x0000000000000010ULL;
 
-    // Static initialization of black pieces
-    _black_pawns   = 0x00FF000000000000ULL;
-    _black_knights = 0x4200000000000000ULL;
-    _black_bishops = 0x2400000000000000ULL;
-    _black_rooks   = 0x8100000000000000ULL;
-    _black_queens   = 0x0800000000000000ULL;
-    _black_king = 0x1000000000000000ULL;
-
-    // Merge all pieces bitboards to constitue a color bitboard
-    _all_white_pieces = _white_pawns | _white_knights | _white_bishops | _white_rooks | _white_queens | _white_king;
-    _all_black_pieces = _black_pawns | _black_knights | _black_bishops | _black_rooks | _black_rooks | _black_king;
-
-    _all_pieces = _all_white_pieces | _all_black_pieces;
 }
 
 
-Color GameBoard::get_color_at(Square sq) const {
-    if ((_all_white_pieces >> (sq.rank * 8 + sq.file)) & 1ULL) return Color::WHITE;
+const uint64_t& GameBoard::get_piece_type_board(const PieceType piece_type, Color side) const {
+    return _position[side][piece_type];
+}
+
+
+const GameBoard::PieceType get_piece_type_at(Square at, Color side) const {
+    for (uint64_t& piece_bb: _position[side])
+    {
+        if (piece_bb[])
+    }
+    
+}
+
+
+Color GameBoard::get_color_at(int8_t index) const {
+    if ((_all_white_pieces >> index) & 1ULL) return Color::WHITE;
     else return Color::BLACK;
 }
 
 
-Piece *GameBoard::get_piece_at(Square sq) const {
-    return _board[sq.rank][sq.file].get();
+void GameBoard::move_piece(Square from, Square to) {
+
+
 }
 
 
@@ -84,33 +79,33 @@ void GameBoard::enpassant(Piece *pawn, Move move) {
     else {
         _board[move.destPos.rank + 1][move.destPos.file].reset();
     }
-    pawn->_position = {move.destPos.file, move.destPos.rank};
+    pawn->_position.pieces[Color::WHITE][PieceType::] = {move.destPos.file, move.destPos.rank};
 }
 
 
 void GameBoard::kingside_castle(Piece *king) {
 
     // Rook displacement
-    Square initPos = {static_cast<int8_t>(king->_position.file + 3), king->_position.rank};
-    Square destPos = {king->_position.file + 1, king->_position.rank};
+    Square initPos = {static_cast<int8_t>(king->_position.pieces[Color::WHITE][PieceType::].file + 3), king->_position.pieces[Color::WHITE][PieceType::].rank};
+    Square destPos = {king->_position.pieces[Color::WHITE][PieceType::].file + 1, king->_position.pieces[Color::WHITE][PieceType::].rank};
     move_piece(initPos, destPos);
 
     // King displacement
-    destPos = {static_cast<int8_t>(king->_position.file + 2), king->_position.rank};
-    move_piece(king->_position, destPos);
+    destPos = {static_cast<int8_t>(king->_position.pieces[Color::WHITE][PieceType::].file + 2), king->_position.pieces[Color::WHITE][PieceType::].rank};
+    move_piece(king->_position.pieces[Color::WHITE][PieceType::], destPos);
 }
 
 
 void GameBoard::queenside_castle(Piece *king) {
 
     // Rook displacement
-    Square initPos = {static_cast<int8_t>(king->_position.file - 4), king->_position.rank};
-    Square destPos = {king->_position.file - 1, king->_position.rank};
+    Square initPos = {static_cast<int8_t>(king->_position.pieces[Color::WHITE][PieceType::].file - 4), king->_position.pieces[Color::WHITE][PieceType::].rank};
+    Square destPos = {king->_position.pieces[Color::WHITE][PieceType::].file - 1, king->_position.pieces[Color::WHITE][PieceType::].rank};
     move_piece(initPos, destPos);
 
     // King displacement
-    destPos = {static_cast<int8_t>(king->_position.file - 2), king->_position.rank};
-    move_piece(king->_position, destPos);
+    destPos = {static_cast<int8_t>(king->_position.pieces[Color::WHITE][PieceType::].file - 2), king->_position.pieces[Color::WHITE][PieceType::].rank};
+    move_piece(king->_position.pieces[Color::WHITE][PieceType::], destPos);
 }
 
 
@@ -118,7 +113,7 @@ void GameBoard::promotion(Piece *pawnToPromote, PieceType piecePieceType) {
 
     // Stores the pawn promotion data
     Color promotionColor = pawnToPromote->_color;
-    Square promotionSq = pawnToPromote->_position;
+    Square promotionSq = pawnToPromote->_position.pieces[Color::WHITE][PieceType::];
     std::unique_ptr<Piece> newPiece;
 
     // Fill the free memory space with the new promotion piece
@@ -155,18 +150,6 @@ bool GameBoard::is_square_attacked(std::vector<Move>& ennemyMoves, Square sq) {
         }
     }
     return false;
-}
-
-
-void GameBoard::move_piece(Square from, Square to) {
-        
-    // Piece displacement
-    auto& src = _board[from.rank][from.file];
-    if (!src) return;
-
-    std::unique_ptr<Piece> moving = std::move(src);
-    _board[to.rank][to.file] = std::move(moving);
-    _board[to.rank][to.file]->_position = to;
 }
 
 

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "board/position.hpp"
 #include "game/pieces/piece.hpp"
 #include "game/pieces/pawn.hpp"
 #include "game/pieces/rook.hpp"
@@ -26,10 +27,7 @@ class GameBoard {
 
     private:
 
-        uint64_t _white_pawns, _white_knights, _white_bishops, _white_rooks, _white_queens, _white_king;
-        uint64_t _black_pawns, _black_knights, _black_bishops, _black_rooks, _black_queens, _black_king;
-        uint64_t _all_white_pieces, _all_black_pieces;
-        uint64_t _all_pieces;
+        Position _position;
 
         /**
          * @brief Moves a piece on the board.
@@ -67,6 +65,8 @@ class GameBoard {
          * @param pawnToPromote The piece to promote (a pawn).
          */
         void promotion(Piece *pawnToPromote, PieceType pieceType);
+
+        uint64_t& get_piece_type_board(const PieceType piece_type) const;
 
     public:
 

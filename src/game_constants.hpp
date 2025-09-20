@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #define BOARD_LENGTH 8
 
 enum class GameState {
@@ -10,16 +12,17 @@ enum class GameState {
     STALEMATE
 };
 
-enum class Color {
-    WHITE = 1,
-    BLACK = -1
+enum Color {
+    WHITE = 0,
+    BLACK = 1,
+    NONE = 2
 };
 
-enum class PieceType {
-    PAWN,
-    KNIGHT,
-    BISHOP,
-    ROOK,
-    QUEEN,
-    KING
+enum PieceType {
+    PAWN = 0,
+    KNIGHT = 1,
+    BISHOP = 2,
+    ROOK = 3,
+    QUEEN = 4,
+    KING = 5
 };
