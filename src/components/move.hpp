@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "game/components/square.hpp"
+#include <cstdint>
 
 
 /**
@@ -22,12 +22,12 @@ enum class MoveType {
  */
 struct Move
 {
-    Square initPos; // Initial position of the piece
-    Square destPos; // Destination of the piece
+    uint8_t from;   // Initial position of the piece
+    uint8_t to;     // Destination of the piece
     MoveType type;  // Type of the move
     bool take;      // If the move is meant to take a piece
 
     bool operator==(const Move& other) const {
-        return (this->initPos == other.initPos && this->destPos == other.destPos);
+        return (this->from == other.from && this->to == other.to);
     }
 };

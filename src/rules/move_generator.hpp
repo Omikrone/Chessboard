@@ -2,8 +2,12 @@
 
 #pragma once
 
-#include "game/board/board.hpp"
-#include "game/components/move.hpp"
+#include "board/board.hpp"
+#include "game_constants.hpp"
+#include "components/move.hpp"
+
+#include <cstdint>
+#include <vector>
 
 
 /**
@@ -14,22 +18,10 @@
 class MoveGenerator
 {
     public:
-
-        /**
-         * @brief Generates all the possible raw moves for a player.
-         *
-         * @param board The game board on which the moves will be generated.
-         * @param side The color of the pieces to generate the moves.
-         * @return A vector of all the possible moves.
-         */
-        static std::vector<Move> get_all_possible_moves(GameBoard& board, Color side);
-
-        /**
-         * @brief Generates the raw moves for a given piece.
-         *
-         * @param board The game board on which the moves will be generated.
-         * @param piece The piece to generate the moves.
-         * @return A vector of the possible moves.
-         */
-        static std::vector<Move> get_possible_moves(GameBoard& board, Piece *piece);
+        static std::vector<Move> pawn_moves(const uint8_t square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side);
+        static std::vector<Move> knight_moves(const uint8_t square);
+        static std::vector<Move> bishop_moves(const uint8_t square, const uint64_t occupancy);
+        static std::vector<Move> rook_moves(const uint8_t square, const uint64_t occupancy);
+        static std::vector<Move> queen_moves(const uint8_t square, const uint64_t occupancy);
+        static std::vector<Move> king_moves(const uint8_t square);
 };
