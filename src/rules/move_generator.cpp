@@ -3,6 +3,51 @@
 #include "rules/move_generator.hpp"
 
 
+std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const GameState& game_state, const Bitboards& board) {
+    std::vector<Move> moves;
+    int64_t mask;
+    for (int i = 0; i < 64; i++)
+    {
+        mask = 1ULL << i;
+        if (game_state.all_pieces & mask)
+        {
+            const PieceType piece_type = board.get_piece_type(side, i);
+            std::vector<Move> p_moves = piece_moves(i, side, piece_type, game_state);
+            moves.insert(moves.end(), p_moves.begin(), p_moves.end());
+        }
+    }
+    return moves;
+}
+
+
+std::vector<Move> MoveGenerator::piece_moves(const uint8_t square, const Color side, const PieceType& piece_type, const GameState& game_state) {
+    std::vector<Move> moves;
+    switch (piece_type)
+    {
+    case PieceType::PAWN:
+        moves = pawn_moves(square, side, ~game_state.all_pieces, game_state.colors[side]);
+        break;
+    case PieceType::BISHOP:
+        moves = bishop_moves(square, side, game_state.colors[side]);
+        break;
+    case PieceType::KNIGHT:
+        moves = knight_moves(square, side, game_state.colors[side]);
+        break;
+    case PieceType::ROOK:
+        moves = rook_moves(square, side, game_state.colors[side]);
+        break;
+    case PieceType::QUEEN:
+        moves = queen_moves(square, side, game_state.colors[side]);
+        break;
+    case PieceType::KING:
+        moves = king_moves(square, side, game_state.colors[side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
+        break;
+    default:
+        break;
+    }
+}
+
+
 std::vector<Move> MoveGenerator::pawn_moves(const uint8_t square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
@@ -178,7 +223,7 @@ std::vector<Move> MoveGenerator::queen_moves(const uint8_t square, const uint64_
 }
 
 
-std::vector<Move> MoveGenerator::king_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::king_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, uint8_t castling_rights) {
     std::vector<Move> moves;
 
     const int8_t directions[] = {7, -7, -9, 9};
@@ -197,5 +242,6 @@ std::vector<Move> MoveGenerator::king_moves(const uint8_t square, const uint64_t
             else moves.push_back({square, to, MoveType::NORMAL, false});
         }
     }
+
     return moves;
 }

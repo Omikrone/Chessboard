@@ -6,7 +6,7 @@
 
 #define BOARD_LENGTH 8
 
-enum class GameState {
+enum class EndGame {
     CONTINUING,
     CHECKMATE,
     STALEMATE
