@@ -1,13 +1,17 @@
 // game_history.cpp
 
-#include "game/game_history.hpp"
+#include "game_history.hpp"
 
 
-void GameHistory::push(Move move) {
-    _history.push_back(move);
+void GameHistory::push(const GameState game_state) {
+    _history.push_back(game_state);
 }
 
-const Move& GameHistory::last() const {
+void GameHistory::pop() {
+    return _history.pop_back();
+}
+
+const GameState& GameHistory::last() const {
     assert(!_history.empty());
     return _history.back();
 }
