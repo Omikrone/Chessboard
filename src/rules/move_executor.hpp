@@ -18,7 +18,7 @@ class MoveExecutor
         void castle_kingside(const Color side, const Move& move);
         void castle_queenside(const Color side, const Move& move);
         void en_passant(const Color side, const Move& move);
-        void promotion(const Color side, const uint8_t square, const PieceType new_piece);
+        void promotion(const Color side, const int square, const PieceType new_piece);
 
     public:
         MoveExecutor(GameHistory& history, GameState& state, Bitboards& board);

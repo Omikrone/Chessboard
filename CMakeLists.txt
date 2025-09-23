@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(chess LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Release build type per default
@@ -25,7 +25,7 @@ endif()
 # Sources and executable
 # ----------------------------
 file(GLOB_RECURSE SOURCES "src/*.cpp")
-add_executable(chess ${SOURCES})
+add_library(chess STATIC ${SOURCES})
 
 # ----------------------------
 # Compiling flags

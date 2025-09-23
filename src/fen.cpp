@@ -8,7 +8,7 @@ std::string FEN::to_string(GameState& game, Bitboards& board) {
 
     // Iterates the gameboard's squares and  convert each piece to it's FEN notation
     for (int i=0; i <= 64; i++) {
-        int8_t wo_piece = 0;
+        int wo_piece = 0;
         Color piece_color = board.is_occupied(i);
         if (piece_color == Color::NONE) {
             wo_piece++;
@@ -69,7 +69,7 @@ char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
 }
 
 
-std::string FEN::castling_rights(uint8_t rights) {
+std::string FEN::castling_rights(int rights) {
     std::string rights_str;
     if ((rights >> 1) & 1) rights_str.append("K");
     if ((rights >> 2) & 1) rights_str.append("Q");

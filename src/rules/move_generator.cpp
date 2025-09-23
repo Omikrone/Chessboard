@@ -20,7 +20,7 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Game
 }
 
 
-std::vector<Move> MoveGenerator::piece_moves(const uint8_t square, const Color side, const PieceType& piece_type, const GameState& game_state) {
+std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType& piece_type, const GameState& game_state) {
     std::vector<Move> moves;
     switch (piece_type)
     {
@@ -45,10 +45,11 @@ std::vector<Move> MoveGenerator::piece_moves(const uint8_t square, const Color s
     default:
         break;
     }
+    return moves;
 }
 
 
-std::vector<Move> MoveGenerator::pawn_moves(const uint8_t square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
     if (side == Color::WHITE) {
@@ -113,46 +114,46 @@ std::vector<Move> MoveGenerator::pawn_moves(const uint8_t square, const Color si
 }
 
 
-std::vector<Move> MoveGenerator::knight_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::knight_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
-    const int8_t dx[] = { 2,  1, -1, -2, -2, -1,  1,  2 };
-    const int8_t dy[] = { 1,  2,  2,  1, -1, -2, -2, -1 };
+    const int dx[] = { 2,  1, -1, -2, -2, -1,  1,  2 };
+    const int dy[] = { 1,  2,  2,  1, -1, -2, -2, -1 };
 
-    int8_t fromX = square % 8;
-    int8_t fromY = square / 8;
+    int fromX = square % 8;
+    int fromY = square / 8;
 
     for (int i = 0; i < 8; i++)
     {
-        int8_t toX = fromX + dx[i];
-        int8_t toY = fromY + dy[i];
+        int toX = fromX + dx[i];
+        int toY = fromY + dy[i];
 
         if (toX < 0 || toX > 7 || toY < 0 || toY > 7) continue;
 
-        int8_t to = toY * 8 + toX;
+        int to = toY * 8 + toX;
         uint64_t mask = 1ULL << to;
         if (side & mask) continue;
 
         bool isCapture = opponent_side & mask;
-        moves.push_back({ square, (uint8_t)to, MoveType::NORMAL, isCapture });
+        moves.push_back({ square, (int)to, MoveType::NORMAL, isCapture });
     }
     return moves;
 }
 
 
-std::vector<Move> MoveGenerator::rook_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
-    const int8_t directions[] = {8, 1, -8, -1};
+    const int directions[] = {8, 1, -8, -1};
     int fromX = square % 8;
     int fromY = square / 8;
     
-    int8_t count;
-    for (int8_t d: directions) {
+    int count;
+    for (int d: directions) {
         count = 1;
         while (true)
         {
-            int8_t to = square + d * count;
+            int to = square + d * count;
 
             int toX = to % 8;
             int toY = to / 8;
@@ -178,19 +179,19 @@ std::vector<Move> MoveGenerator::rook_moves(const uint8_t square, const uint64_t
 }
 
 
-std::vector<Move> MoveGenerator::rook_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::bishop_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
-    const int8_t directions[] = {7, -7, -9, 9};
+    const int directions[] = {7, -7, -9, 9};
     int fromX = square % 8;
     int fromY = square / 8;
     
-    int8_t count;
-    for (int8_t d: directions) {
+    int count;
+    for (int d: directions) {
         count = 1;
         while (true)
         {
-            int8_t to = square + d * count;
+            int to = square + d * count;
 
             int toX = to % 8;
             int toY = to / 8;
@@ -215,7 +216,7 @@ std::vector<Move> MoveGenerator::rook_moves(const uint8_t square, const uint64_t
     return moves;
 }
 
-std::vector<Move> MoveGenerator::queen_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::queen_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
     std::vector<Move> bishop_moves = MoveGenerator::bishop_moves(square, side, opponent_side);
     std::vector<Move> rook_moves = MoveGenerator::rook_moves(square, side, opponent_side);
     bishop_moves.insert(bishop_moves.end(), rook_moves.begin(), rook_moves.end());
@@ -223,17 +224,17 @@ std::vector<Move> MoveGenerator::queen_moves(const uint8_t square, const uint64_
 }
 
 
-std::vector<Move> MoveGenerator::king_moves(const uint8_t square, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, uint8_t castling_rights) {
+std::vector<Move> MoveGenerator::king_moves(const int square, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, int castling_rights) {
     std::vector<Move> moves;
 
-    const int8_t directions[] = {7, -7, -9, 9};
+    const int directions[] = {7, -7, -9, 9};
     
-    int8_t count;
+    int count;
     for (int x = -1; x <= 1; x++)
     {
         for (int y = -1; y <= 1; y++)
         {
-            uint8_t to = square + x + y * 8;
+            int to = square + x + y * 8;
             if (to < 0 || to > 63) continue;
             
             uint64_t mask = 1ULL << to;

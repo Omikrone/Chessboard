@@ -28,5 +28,5 @@ class FEN
 
         static char piece_symbol(const Color piece_color, const PieceType piece_type);
 
-        static std::string FEN::castling_rights(uint8_t rights);
+        static std::string castling_rights(int rights);
 };

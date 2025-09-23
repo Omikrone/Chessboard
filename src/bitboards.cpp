@@ -3,7 +3,7 @@
 #include "bitboards.hpp"
 
 
-Bitboards::Bitboards() {
+Bitboards::Bitboards(GameState& game_state) : _game_state(game_state) {
         
     // Static initialization of white pieces
     _game_state.pieces[Color::WHITE][PieceType::PAWN] = 0x000000000000FF00ULL;
@@ -43,21 +43,21 @@ void Bitboards::update_all() {
 }
 
 
-void Bitboards::add_piece(const Color side, const PieceType piece_type, const uint8_t at) {
+void Bitboards::add_piece(const Color side, const PieceType piece_type, const int at) {
     _game_state.pieces[side][piece_type] |= (1ULL << at);
     update_side(side);
     update_all();
 }
 
 
-void Bitboards::remove_piece(const Color side, const PieceType piece_type, const uint8_t at) {
+void Bitboards::remove_piece(const Color side, const PieceType piece_type, const int at) {
     _game_state.pieces[side][piece_type] &= ~(1ULL << at);
     update_side(side);
     update_all();
 }
 
 
-void Bitboards::move_piece(const Color side, const PieceType piece_type, const uint8_t from, const uint8_t to) {
+void Bitboards::move_piece(const Color side, const PieceType piece_type, const int from, const int to) {
     _game_state.pieces[side][piece_type] &= ~(1ULL << from);
     _game_state.pieces[side][piece_type] |= (1ULL << to);
     update_side(side);
@@ -65,17 +65,18 @@ void Bitboards::move_piece(const Color side, const PieceType piece_type, const u
 }
 
 
-const Color Bitboards::is_occupied(uint8_t at) const {
+const Color Bitboards::is_occupied(int at) const {
     uint64_t mask = (1ULL << at);
     if (!(_game_state.all_pieces & mask)) return Color::NONE;
     return (_game_state.colors[Color::WHITE] & mask) ? Color::WHITE : Color::BLACK;
 }
 
 
-const PieceType Bitboards::get_piece_type(const Color side, const uint8_t at) const {
+const PieceType Bitboards::get_piece_type(const Color side, const int at) const {
     uint64_t mask = (1ULL << at);
     for (int i = 0; i < 6; i++)
     {
         if (_game_state.pieces[side][i] & mask) return static_cast<PieceType>(i);
     }
+    return PieceType::NONE_PIECE;
 }

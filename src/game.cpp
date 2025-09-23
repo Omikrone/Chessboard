@@ -1,30 +1,29 @@
 // game.cpp
 
-#include "game/game.hpp"
+#include "game.hpp"
 
 
 Game::Game()
-    : _board(),
-      _history(),
-      _moveValidator(_board, _history),
-      _currentTurn(Color::WHITE),
-      _blackMovesNb(0),
-      _whiteMovesNb(0)
+    :   _board(_game_state),
+        _history(),
+        _executor(_history, _game_state, _board),
+        _validator(_game_state, _board, _executor)
+      
 {}
 
 
-bool Game::try_apply_move(const Move& move) {
+bool Game::try_apply_move(const int from, const int to) {
 
-    Piece *piece = _board.get_piece_at(move.initPos);
-
-    if (piece == nullptr || piece->_color != _currentTurn) return false; // The player can't play a piece from the other side
+    Color piece_color = _board.is_occupied(from);
+    if (piece_color != _game_state.side_to_move) return false; // The player can't play a piece from the other side
+    PieceType piece_type = _board.get_piece_type(_game_state.side_to_move, from);
 
     // Verifies that the move is legal
-    std::vector<Move> legalMoves = get_legal_moves(move.initPos);
-    for (Move m: legalMoves) {
-        if (m == move) {
-            _board.make_move(m);
-            _history.push(m);
+    std::vector<Move> moves = MoveGenerator::piece_moves(from, _game_state.side_to_move, piece_type, _game_state);
+    for (Move m: moves) {
+        if (_validator.is_legal(m)) {
+            _executor.make_move(_game_state.side_to_move, m);
+            _history.push(_game_state);
             return true;
         }
     }
@@ -32,62 +31,33 @@ bool Game::try_apply_move(const Move& move) {
 }
 
 
-std::vector<Move> Game::get_legal_moves(const Square sq) {
-
-    Piece *piece = _board.get_piece_at(sq);
-    if (piece == nullptr) {
-        return std::vector<Move>{};
-    }
-
-    // Generates the raw possible moves for and filters the legal moves according to the chess rules
-    std::vector<Move> rawMoves = MoveGenerator::get_possible_moves(_board, piece);
-    std::vector<Move> legalMoves = _moveValidator.filter_legal_moves(rawMoves, piece->_color);
-
-    return legalMoves;
-}
-
-
-GameState Game::get_game_state() {
+EndGame Game::get_game_state() {
 
     // If the current player has at least one possible moves, the game isn't finished
-    for (auto& row: _board._board) {
-        for (const auto &cell: row) {
-            if (cell != nullptr && cell->_color == _currentTurn) {
-                std::vector<Move> possibleMoves = MoveGenerator::get_possible_moves(_board, cell.get());
-                std::vector<Move> legalMoves = _moveValidator.filter_legal_moves(possibleMoves, cell.get()->_color);
-                if (!legalMoves.empty()) return GameState::CONTINUING;
-            }
-        }
-    }
-    
-    // Generates the enemy moves to know if the king is in check
-    std::vector<Move> enemyMoves;
-    if (_currentTurn == Color::WHITE) enemyMoves = MoveGenerator::get_all_possible_moves(_board, Color::BLACK);
-    else enemyMoves = MoveGenerator::get_all_possible_moves(_board, Color::WHITE);
+    for (int i=0; i < 64; i++) {
+        std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
 
-    King& king = _board.get_king(_currentTurn);
-    // No possible moves left + king in check = checkmate, else stalemate
-    if (_board.is_square_attacked(enemyMoves, king._position)) return GameState::CHECKMATE;
-    else return GameState::STALEMATE;
+        for (Move m: possible_moves) {
+            if (_validator.is_legal(m)) return EndGame::CONTINUING;
+        }
+
+        if (possible_moves.empty()) return EndGame::STALEMATE;
+        else return EndGame::CHECKMATE;
+    }
 }
 
 
 void Game::next_turn() {
-    _currentTurn = (_currentTurn == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    _game_state.side_to_move = (_game_state.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE;
 }
 
 
 Color Game::get_current_turn() const {
-    return _currentTurn;
-}
-
-
-GameBoard& Game::get_game_board() {
-    return _board;
+    return _game_state.side_to_move;
 }
 
 
 int Game::get_nb_moves(Color side) const {
-    if (side == Color::WHITE) return _whiteMovesNb;
-    else return _blackMovesNb;
+    if (side == Color::WHITE) return _game_state.fullmove_number / 2;
+    else return _game_state.fullmove_number / 2;
 }

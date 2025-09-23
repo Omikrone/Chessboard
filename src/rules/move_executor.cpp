@@ -73,7 +73,7 @@ void MoveExecutor::en_passant(const Color side, const Move& move) {
 }
 
 
-void MoveExecutor::promotion(const Color side, const uint8_t square, const PieceType new_piece) {
+void MoveExecutor::promotion(const Color side, const int square, const PieceType new_piece) {
     _board.remove_piece(side, PieceType::PAWN, square);
     _board.add_piece(side, new_piece, square);
 }

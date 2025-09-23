@@ -14,11 +14,11 @@ struct GameState
     uint64_t colors[2];
     uint64_t all_pieces;
 
-    Color side_to_move;
-    uint8_t castling_rights;
-    int en_passant_square;
-    int halfmove_clock;
-    int fullmove_number;
+    Color side_to_move = Color::WHITE;
+    int castling_rights = 0;
+    int en_passant_square = -1;
+    int halfmove_clock = 0;
+    int fullmove_number = 0;
 };
 
 
@@ -31,12 +31,12 @@ private:
     void update_all();
 
 public:
-    Bitboards();
+    Bitboards(GameState& game_state);
     ~Bitboards() = default;
     
-    void add_piece(const Color side, const PieceType piece_type, const uint8_t at);
-    void remove_piece(const Color side, const PieceType piece_type, const uint8_t at);
-    void move_piece(const Color side, const PieceType piece_type, const uint8_t from, const uint8_t to);
-    const Color is_occupied(const uint8_t at) const;
-    const PieceType get_piece_type(const Color side, const uint8_t at) const;
+    void add_piece(const Color side, const PieceType piece_type, const int at);
+    void remove_piece(const Color side, const PieceType piece_type, const int at);
+    void move_piece(const Color side, const PieceType piece_type, const int from, const int to);
+    const Color is_occupied(const int at) const;
+    const PieceType get_piece_type(const Color side, const int at) const;
 };

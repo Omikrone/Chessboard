@@ -24,5 +24,6 @@ enum PieceType {
     BISHOP = 2,
     ROOK = 3,
     QUEEN = 4,
-    KING = 5
+    KING = 5,
+    NONE_PIECE = 6
 };

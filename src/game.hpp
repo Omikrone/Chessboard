@@ -2,12 +2,11 @@
 
 #pragma once
 
-#include "board/board.hpp"
-#include "game/rules/move_validator.hpp"
-#include "game/rules/move_generator.hpp"
-#include "game/components/square.hpp"
-#include "game/game_history.hpp"
-#include "game/game_constants.hpp"
+#include "rules/move_generator.hpp"
+#include "rules/move_validator.hpp"
+#include "rules/move_executor.hpp"
+#include "bitboards.hpp"
+#include "game_constants.hpp"
 
 
 /**
@@ -19,12 +18,11 @@ class Game
 {
     private:
       
-        GameBoard _board;
-        MoveValidator _moveValidator;
+        Bitboards _board;
+        GameState _game_state;
+        MoveValidator _validator;
+        MoveExecutor _executor;
         GameHistory _history;
-        Color _currentTurn;
-        int _blackMovesNb;
-        int _whiteMovesNb;
 
     public:
 
@@ -38,7 +36,7 @@ class Game
          * @param move Move to apply.
          * @return true if the move is legal, else false.
          */
-        bool try_apply_move(const Move& move);
+        bool try_apply_move(const int from, const int to);
 
         /**
          * @brief Gets the legal moves from a square.
@@ -46,7 +44,7 @@ class Game
          * @param sq Square of the initial position.
          * @return A vector of the possible (legal) moves to play.
          */
-        std::vector<Move> get_legal_moves(const Square sq);
+        std::vector<Move> get_legal_moves(const int sq);
 
         /**
          * @brief Switch the current turn.
@@ -58,7 +56,7 @@ class Game
          * 
          * @return The game of the state (checkmate, ...).
          */
-        GameState get_game_state();
+        EndGame get_game_state();
 
         /**
          * @brief Gets the the color of the current player.
@@ -66,13 +64,6 @@ class Game
          * @return The Color of the current turn.
          */
         Color get_current_turn() const;
-
-        /**
-         * @brief Gets the game board related to the game.
-         * 
-         * @return The GameBoard.
-         */
-        GameBoard& get_game_board();
 
         /**
          * @brief Gets the current number of moves played in the game.

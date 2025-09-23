@@ -22,8 +22,8 @@ enum class MoveType {
  */
 struct Move
 {
-    uint8_t from;   // Initial position of the piece
-    uint8_t to;     // Destination of the piece
+    int from;   // Initial position of the piece
+    int to;     // Destination of the piece
     MoveType type;  // Type of the move
     bool take;      // If the move is meant to take a piece
 
