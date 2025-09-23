@@ -2,8 +2,10 @@
 
 #pragma once
 
-#include "game/game.hpp"
+#include "bitboards.hpp"
+#include "game_constants.hpp"
 
+#include <cctype>
 #include <string>
 
 
@@ -22,5 +24,9 @@ class FEN
          * @param game Game to convert.
          * @return A string respresenting the FEN notation.
          */
-        static std::string to_string(Game& game);
+        static std::string to_string(GameState& game, Bitboards& board);
+
+        static char piece_symbol(const Color piece_color, const PieceType piece_type);
+
+        static std::string FEN::castling_rights(uint8_t rights);
 };
