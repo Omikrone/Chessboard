@@ -1,6 +1,8 @@
 // bitboards.cpp
 
 #include "bitboards.hpp"
+#include <iostream>
+#include <bitset>
 
 
 Bitboards::Bitboards(GameState& game_state) : _game_state(game_state) {
@@ -58,10 +60,13 @@ void Bitboards::remove_piece(const Color side, const PieceType piece_type, const
 
 
 void Bitboards::move_piece(const Color side, const PieceType piece_type, const int from, const int to) {
+    std::cout << "GAMEBOARD: " << std::endl;
+    print_board(_game_state.all_pieces);
     _game_state.pieces[side][piece_type] &= ~(1ULL << from);
     _game_state.pieces[side][piece_type] |= (1ULL << to);
     update_side(side);
     update_all();
+    std::cout << _game_state.all_pieces << std::endl;
 }
 
 
@@ -79,4 +84,14 @@ const PieceType Bitboards::get_piece_type(const Color side, const int at) const 
         if (_game_state.pieces[side][i] & mask) return static_cast<PieceType>(i);
     }
     return PieceType::NONE_PIECE;
+}
+
+void Bitboards::print_board(uint64_t bb) {
+    for (int rank = 7; rank >= 0; rank--) {
+        for (int file = 0; file < 8; file++) {
+            int square = rank * 8 + file;
+            std::cout << ((bb >> square) & 1ULL ? "1 " : ". ");
+        }
+        std::cout << std::endl;
+    }
 }

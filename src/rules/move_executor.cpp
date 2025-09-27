@@ -1,6 +1,7 @@
 // move_executor.hpp
 
 #include "move_executor.hpp"
+#include <iostream>
 
 
 MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& board):
@@ -11,6 +12,7 @@ MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& bo
 
 
 void MoveExecutor::make_move(const Color side, const Move& move) {
+    move.print();
     switch (move.type)
     {
         case MoveType::CASTLE_KINGSIDE:

@@ -1,6 +1,8 @@
 //move_validator.cpp
 
 #include "rules/move_validator.hpp"
+#include <iostream>
+#include "fen.hpp"
 
 
 MoveValidator::MoveValidator(const GameState& game_state, const Bitboards& board, MoveExecutor& executor) 
@@ -30,6 +32,10 @@ bool MoveValidator::is_king_in_check(const Color king_color) const {
 
 bool MoveValidator::is_legal(const Move& move) {
 
+    bool result;
     _executor.make_move(_game_state.side_to_move, move);
-    return is_king_in_check(_game_state.side_to_move);
+    std::cout << FEN::to_string(_game_state, _board) << std::endl;
+    result = !is_king_in_check(_game_state.side_to_move);
+    _executor.unmake_last_move();
+    return result;
 }

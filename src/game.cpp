@@ -1,6 +1,7 @@
 // game.cpp
 
 #include "game.hpp"
+#include <iostream>
 
 
 Game::Game()
@@ -23,7 +24,8 @@ bool Game::try_apply_move(const int from, const int to) {
     for (Move m: moves) {
         if (_validator.is_legal(m)) {
             _executor.make_move(_game_state.side_to_move, m);
-            _history.push(_game_state);
+            std::cout << "GET OUT" << std::endl;
+            _board.print_board(_game_state.colors[Color::WHITE]);
             return true;
         }
     }
@@ -38,7 +40,8 @@ EndGame Game::get_game_state() {
         std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
 
         for (Move m: possible_moves) {
-            if (_validator.is_legal(m)) return EndGame::CONTINUING;
+            if (_validator.is_legal(m)) {
+                return EndGame::CONTINUING;}
         }
 
         if (possible_moves.empty()) return EndGame::STALEMATE;
@@ -60,4 +63,8 @@ Color Game::get_current_turn() const {
 int Game::get_nb_moves(Color side) const {
     if (side == Color::WHITE) return _game_state.fullmove_number / 2;
     else return _game_state.fullmove_number / 2;
+}
+
+std::string Game::get_fen() const {
+    return FEN::to_string(_game_state, _board);
 }

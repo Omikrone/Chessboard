@@ -7,6 +7,8 @@
 #include "rules/move_executor.hpp"
 #include "bitboards.hpp"
 #include "game_constants.hpp"
+#include "fen.hpp"
+#include <string>
 
 
 /**
@@ -71,4 +73,6 @@ class Game
          * @return The number of moves.
          */
         int get_nb_moves(const Color side) const;
+
+        std::string get_fen() const;
 };

@@ -3,31 +3,34 @@
 #include "fen.hpp"
 
 
-std::string FEN::to_string(GameState& game, Bitboards& board) {
+std::string FEN::to_string(const GameState& game, const Bitboards& board) {
     std::string fen;
+    
 
     // Iterates the gameboard's squares and  convert each piece to it's FEN notation
-    for (int i=0; i <= 64; i++) {
+    for (int rank = 7; rank >= 0; --rank) {
         int wo_piece = 0;
-        Color piece_color = board.is_occupied(i);
-        if (piece_color == Color::NONE) {
-            wo_piece++;
-        }
-        else {
-            if (wo_piece != 0) {
-                // Adds the number of consecutive squares without pieces and resets the counter
-                fen.append(std::to_string(wo_piece));
-                wo_piece = 0;
-            }
-            PieceType piece_type = board.get_piece_type(piece_color, i);
-            fen.push_back(FEN::piece_symbol(piece_color, piece_type));
-        }
-        // Adds the number of consecutive squares without pieces for a new range
-        if ((i % 7 == 0) && wo_piece != 0) fen.append(std::to_string(wo_piece));
-        fen.push_back('/');
-    }
+        for (int file = 0; file < 8; ++file) {
+            int i = rank * 8 + file;
 
-    fen.pop_back(); // Remove the last '/'
+            Color piece_color = board.is_occupied(i);
+            if (piece_color == Color::NONE) {
+                wo_piece++;
+            }
+            else {
+                if (wo_piece > 0)
+                {
+                    // Adds the number of consecutive squares without pieces and resets the counter
+                    fen.append(std::to_string(wo_piece));
+                    wo_piece = 0;
+                }
+                PieceType piece_type = board.get_piece_type(piece_color, i);
+                fen.push_back(FEN::piece_symbol(piece_color, piece_type));
+            }
+        }
+        if (wo_piece > 0) fen.append(std::to_string(wo_piece));
+        if (rank > 0) fen.push_back('/');  
+    }
 
     if (game.side_to_move == Color::WHITE) fen.append(" w ");
     else fen.append(" b ");
@@ -70,7 +73,7 @@ char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
 
 
 std::string FEN::castling_rights(int rights) {
-    std::string rights_str;
+    std::string rights_str = "";
     if ((rights >> 1) & 1) rights_str.append("K");
     if ((rights >> 2) & 1) rights_str.append("Q");
     if ((rights >> 3) & 1) rights_str.append("k");

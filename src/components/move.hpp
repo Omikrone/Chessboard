@@ -3,6 +3,8 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
+#include <string>
 
 
 /**
@@ -29,5 +31,9 @@ struct Move
 
     bool operator==(const Move& other) const {
         return (this->from == other.from && this->to == other.to);
+    }
+
+    void print() const {
+        std::cout << "{" << std::to_string(this->from) << " : " << std::to_string(this->to) << "}" << std::endl;
     }
 };

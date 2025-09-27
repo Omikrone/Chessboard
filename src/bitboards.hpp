@@ -15,7 +15,7 @@ struct GameState
     uint64_t all_pieces;
 
     Color side_to_move = Color::WHITE;
-    int castling_rights = 0;
+    int castling_rights = INT32_MAX;
     int en_passant_square = -1;
     int halfmove_clock = 0;
     int fullmove_number = 0;
@@ -39,4 +39,5 @@ public:
     void move_piece(const Color side, const PieceType piece_type, const int from, const int to);
     const Color is_occupied(const int at) const;
     const PieceType get_piece_type(const Color side, const int at) const;
+    void print_board(uint64_t bb);
 };
