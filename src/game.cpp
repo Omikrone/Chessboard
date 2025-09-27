@@ -39,13 +39,18 @@ bool Game::try_apply_move(const int from, const int to) {
 
 EndGame Game::get_game_state() {
 
+    _history.push(_game_state);
+
     // If the current player has at least one possible moves, the game isn't finished
     for (int i=0; i < 64; i++) {
         std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
 
         for (Move m: possible_moves) {
             if (_validator.is_legal(m)) {
-                return EndGame::CONTINUING;}
+                std::cout << "VALID MOVE : ";
+                m.print();
+                return EndGame::CONTINUING;
+            }
         }
 
         if (possible_moves.empty()) return EndGame::STALEMATE;

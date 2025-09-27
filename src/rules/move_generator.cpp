@@ -12,6 +12,7 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Game
         if (game_state.all_pieces & mask)
         {
             const PieceType piece_type = board.get_piece_type(side, i);
+            if (piece_type == Color::NONE) continue;
             std::vector<Move> p_moves = piece_moves(i, side, piece_type, game_state);
             moves.insert(moves.end(), p_moves.begin(), p_moves.end());
         }
