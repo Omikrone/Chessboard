@@ -22,25 +22,26 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Game
 
 std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType& piece_type, const GameState& game_state) {
     std::vector<Move> moves;
+    Color opponent_side = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
     switch (piece_type)
     {
     case PieceType::PAWN:
-        moves = pawn_moves(square, side, ~game_state.all_pieces, game_state.colors[side]);
+        moves = pawn_moves(square, side, ~game_state.all_pieces, game_state.colors[opponent_side]);
         break;
     case PieceType::BISHOP:
-        moves = bishop_moves(square, side, game_state.colors[side]);
+        moves = bishop_moves(square, side, game_state.colors[opponent_side]);
         break;
     case PieceType::KNIGHT:
-        moves = knight_moves(square, side, game_state.colors[side]);
+        moves = knight_moves(square, side, game_state.colors[opponent_side]);
         break;
     case PieceType::ROOK:
-        moves = rook_moves(square, side, game_state.colors[side]);
+        moves = rook_moves(square, side, game_state.colors[opponent_side]);
         break;
     case PieceType::QUEEN:
-        moves = queen_moves(square, side, game_state.colors[side]);
+        moves = queen_moves(square, side, game_state.colors[opponent_side]);
         break;
     case PieceType::KING:
-        moves = king_moves(square, side, game_state.colors[side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
+        moves = king_moves(square, game_state.colors[side], game_state.colors[opponent_side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
         break;
     default:
         break;

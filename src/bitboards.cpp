@@ -32,9 +32,11 @@ Bitboards::Bitboards(GameState& game_state) : _game_state(game_state) {
 
 void Bitboards::update_side(const Color side) {
     _game_state.colors[side] = 0ULL;
-    for (uint64_t& bb: _game_state.pieces[side]) {
+    for (uint64_t bb: _game_state.pieces[side]) {
         _game_state.colors[side] |= bb;
     }
+    //std::cout << "SIDEBOARD" << std::endl;
+    //print_board(_game_state.colors[side]);
 }
 
 
@@ -60,13 +62,13 @@ void Bitboards::remove_piece(const Color side, const PieceType piece_type, const
 
 
 void Bitboards::move_piece(const Color side, const PieceType piece_type, const int from, const int to) {
-    std::cout << "GAMEBOARD: " << std::endl;
-    print_board(_game_state.all_pieces);
+    print_board(_game_state.pieces[side][PieceType::PAWN]);
     _game_state.pieces[side][piece_type] &= ~(1ULL << from);
     _game_state.pieces[side][piece_type] |= (1ULL << to);
     update_side(side);
     update_all();
-    std::cout << _game_state.all_pieces << std::endl;
+    std::cout << "GAMEBOARD: " << std::endl;
+    print_board(_game_state.pieces[side][PieceType::PAWN]);
 }
 
 
@@ -86,7 +88,7 @@ const PieceType Bitboards::get_piece_type(const Color side, const int at) const 
     return PieceType::NONE_PIECE;
 }
 
-void Bitboards::print_board(uint64_t bb) {
+void Bitboards::print_board(uint64_t bb) const {
     for (int rank = 7; rank >= 0; rank--) {
         for (int file = 0; file < 8; file++) {
             int square = rank * 8 + file;

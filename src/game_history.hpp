@@ -20,7 +20,7 @@ class GameHistory {
 
     public:
 
-        GameHistory() = default;
+        GameHistory(GameState game_state);
 
         ~GameHistory() = default;
 
@@ -29,7 +29,7 @@ class GameHistory {
          *
          * @param move Move played.
          */
-        void push(const GameState game_state);
+        void push(GameState game_state);
 
         void pop();
 
@@ -38,7 +38,7 @@ class GameHistory {
          *
          * @return The move.
          */
-        const GameState& last() const;
+        GameState last() const;
 
         /**
          * @brief Verifies if the history is empty.
@@ -46,4 +46,6 @@ class GameHistory {
          * @return true if it is empty, else false.
          */
         bool empty() const;
+
+        size_t size() const;
 };

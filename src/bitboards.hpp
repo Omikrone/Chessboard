@@ -25,7 +25,7 @@ struct GameState
 class Bitboards
 {
 private:
-    GameState _game_state;
+    GameState& _game_state;
 
     void update_side(const Color side);
     void update_all();
@@ -39,5 +39,5 @@ public:
     void move_piece(const Color side, const PieceType piece_type, const int from, const int to);
     const Color is_occupied(const int at) const;
     const PieceType get_piece_type(const Color side, const int at) const;
-    void print_board(uint64_t bb);
+    void print_board(uint64_t bb) const;
 };

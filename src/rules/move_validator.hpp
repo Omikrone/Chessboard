@@ -14,15 +14,15 @@
 class MoveValidator
 {
 private:
-    const GameState& _game_state;
-    const Bitboards& _board;
+    GameState& _game_state;
+    Bitboards& _board;
     MoveExecutor& _executor;
 
     bool is_square_attacked(const int square, const Color opponent) const;
     bool is_king_in_check(const Color king_color) const;
 
 public:
-    MoveValidator(const GameState& position, const Bitboards& board, MoveExecutor& executor);
+    MoveValidator(GameState& position, Bitboards& board, MoveExecutor& executor);
     ~MoveValidator() = default;
 
     bool is_legal(const Move& move);

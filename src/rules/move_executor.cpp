@@ -33,13 +33,16 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
             break;
     }
     _history.push(_game_state);
+    std::cout << _history.size() << std::endl;
 }
 
 
 void MoveExecutor::unmake_last_move() {
-    GameState last_state = _history.last();
-    _game_state = last_state;
     _history.pop();
+    GameState last_state = _history.last();
+    std::cout << "LAST STATE : " << std::endl;
+    _game_state = last_state;
+    _board.print_board(last_state.colors[last_state.side_to_move]);
 }
 
 
@@ -52,6 +55,7 @@ void MoveExecutor::normal(const Color side, const Move& move) {
         _board.remove_piece(opponent_color, opponent_piece, move.to);
     }
     PieceType piece_type = _board.get_piece_type(side, move.from);
+    std::cout << "piece type : " << piece_type << std::endl;
     _board.move_piece(side, piece_type, move.from, move.to);
 }
 

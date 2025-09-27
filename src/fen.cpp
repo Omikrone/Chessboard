@@ -6,7 +6,6 @@
 std::string FEN::to_string(const GameState& game, const Bitboards& board) {
     std::string fen;
     
-
     // Iterates the gameboard's squares and  convert each piece to it's FEN notation
     for (int rank = 7; rank >= 0; --rank) {
         int wo_piece = 0;
@@ -25,6 +24,7 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
                     wo_piece = 0;
                 }
                 PieceType piece_type = board.get_piece_type(piece_color, i);
+                if (piece_type == NONE_PIECE) continue;
                 fen.push_back(FEN::piece_symbol(piece_color, piece_type));
             }
         }
@@ -63,8 +63,11 @@ char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
     case PieceType::KNIGHT:
         symbol = 'n';
         break;
-    default:
+    case PieceType::KING:
         symbol = 'k';
+        break;
+    default:
+        symbol = ' ';
         break;
     }
     if (piece_color == Color::WHITE) return toupper(symbol);
