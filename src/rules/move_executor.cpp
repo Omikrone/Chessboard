@@ -26,7 +26,7 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
             break;
         case MoveType::PROMOTION:
             normal(side, move);
-            promotion(side, move.from, PieceType::QUEEN);
+            promotion(side, move.to, PieceType::QUEEN);
             break;
         default:
             normal(side, move);
