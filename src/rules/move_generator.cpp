@@ -13,12 +13,8 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Game
         if ((game_state.colors[side] & mask) == 0) continue;
 
         const PieceType piece_type = board.get_piece_type(side, i);
-        std::cout << "BISHOP MOVES (SIDE) : " << i << std::endl;
         if (piece_type == PieceType::NONE_PIECE) {continue;}
-        
-        //board.print_board(game_state.pieces[side][PieceType::BISHOP]);
-        //board.print_board(game_state.colors[side]);
-        //board.print_board(game_state.all_pieces);
+
         std::vector<Move> p_moves = piece_moves(i, side, piece_type, game_state);
         moves.insert(moves.end(), p_moves.begin(), p_moves.end());
     }
@@ -36,9 +32,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
         moves = pawn_moves(square, game_state, side, ~game_state.all_pieces, game_state.colors[opponent_side]);
         break;
     case PieceType::BISHOP:
-        std::cout << "BISHOP POSITION : " << std::endl;
         moves = MoveGenerator::bishop_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
-        std::cout << "BISHOP MOVES LENGTH : " << moves.size() << std::endl;
         break;
     case PieceType::KNIGHT:
         moves = knight_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
@@ -261,7 +255,6 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c
     if ((castling_rights >> (side_c * 2 + 1) & 1) 
     && ((all_pieces >> (square + 1)) & 1) == 0 
     && ((all_pieces >> (square + 2)) & 0) == 0) {
-        std::cout << "CASTLE!!!!" << std::endl;
         moves.push_back({square, square + 2, MoveType::CASTLE_KINGSIDE, false});
     }
     if ((castling_rights >> (side_c * 2 + 2) & 1) 

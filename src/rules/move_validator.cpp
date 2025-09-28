@@ -39,20 +39,14 @@ bool MoveValidator::is_king_in_check(const Color king_color) const {
 bool MoveValidator::is_legal(const Move& move) {
 
     bool result;
-    std::cout << "BEFORE MAKE : " << std::endl;
-    _board.print_board(_game_state.colors[_game_state.side_to_move]);
 
     if (move.type == MoveType::CASTLE_KINGSIDE || move.type==MoveType::CASTLE_QUEENSIDE) {
         return check_castle(move, _game_state.side_to_move);
     }
 
     _executor.make_move(_game_state.side_to_move, move);
-    std::cout << FEN::to_string(_game_state, _board) << std::endl;
     result = !is_king_in_check(_game_state.side_to_move);
-    if (result) std::cout << _game_state.side_to_move << std::endl;
     _executor.unmake_last_move();
-    std::cout << "AFTER UNMAKE : " << std::endl;
-    _board.print_board(_game_state.colors[_game_state.side_to_move]);
     return result;
 }
 

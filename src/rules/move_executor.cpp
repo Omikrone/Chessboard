@@ -12,7 +12,6 @@ MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& bo
 
 
 void MoveExecutor::make_move(const Color side, const Move& move) {
-    move.print();
     switch (move.type)
     {
         case MoveType::CASTLE_KINGSIDE:
@@ -33,16 +32,13 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
             break;
     }
     _history.push(_game_state);
-    std::cout << _history.size() << std::endl;
 }
 
 
 void MoveExecutor::unmake_last_move() {
     _history.pop();
     GameState last_state = _history.last();
-    std::cout << "LAST STATE : " << std::endl;
     _game_state = last_state;
-    _board.print_board(last_state.colors[last_state.side_to_move]);
 }
 
 

@@ -21,16 +21,12 @@ bool Game::try_apply_move(const int from, const int to) {
     Color piece_color = _board.is_occupied(from);
     if (piece_color != _game_state.side_to_move) return false; // The player can't play a piece from the other side
     PieceType piece_type = _board.get_piece_type(_game_state.side_to_move, from);
-    std::cout << "PIECE_TYPE : " << piece_type << std::endl;
 
     // Verifies that the move is legal
     std::vector<Move> moves = MoveGenerator::piece_moves(from, _game_state.side_to_move, piece_type, _game_state);
     for (Move m: moves) {
         if (m.from == from && m.to == to && _validator.is_legal(m)) {
-            std::cout << "SIDE TO MOVE : " << _game_state.side_to_move << std::endl;
             _executor.make_move(_game_state.side_to_move, m);
-            std::cout << "GET OUT" << std::endl;
-            _board.print_board(_game_state.colors[_game_state.side_to_move]);
             if (_game_state.en_passant_square == en_passant) _game_state.en_passant_square = -1;
             return true;
         }
@@ -49,8 +45,6 @@ EndGame Game::get_game_state() {
 
         for (Move m: possible_moves) {
             if (_validator.is_legal(m)) {
-                std::cout << "VALID MOVE : ";
-                m.print();
                 return EndGame::CONTINUING;
             }
         }

@@ -25,18 +25,22 @@ class GameHistory {
         ~GameHistory() = default;
 
         /**
-         * @brief Adds a move played to the history.
+         * @brief Adds a new game state to the history.
          *
-         * @param move Move played.
+         * @param game_state The current state of the game.
          */
         void push(GameState game_state);
 
+        /**
+         * @brief Removes the last game state played from the history.
+         * 
+         */
         void pop();
 
         /**
-         * @brief Gets the last move played.
+         * @brief Gets the last game state added.
          *
-         * @return The move.
+         * @return The state of the game.
          */
         GameState last() const;
 
@@ -47,5 +51,10 @@ class GameHistory {
          */
         bool empty() const;
 
+        /**
+         * @brief Gets the size (number of moves) of the history.
+         *
+         * @return The size of the history.
+         */
         size_t size() const;
 };

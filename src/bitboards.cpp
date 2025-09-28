@@ -35,8 +35,6 @@ void Bitboards::update_side(const Color side) {
     for (uint64_t bb: _game_state.pieces[side]) {
         _game_state.colors[side] |= bb;
     }
-    //std::cout << "SIDEBOARD" << std::endl;
-    //print_board(_game_state.colors[side]);
 }
 
 
@@ -62,13 +60,10 @@ void Bitboards::remove_piece(const Color side, const PieceType piece_type, const
 
 
 void Bitboards::move_piece(const Color side, const PieceType piece_type, const int from, const int to) {
-    print_board(_game_state.pieces[side][PieceType::PAWN]);
     _game_state.pieces[side][piece_type] &= ~(1ULL << from);
     _game_state.pieces[side][piece_type] |= (1ULL << to);
     update_side(side);
     update_all();
-    std::cout << "GAMEBOARD: " << std::endl;
-    print_board(_game_state.pieces[side][PieceType::PAWN]);
     if (piece_type == PieceType::PAWN && (to - from) == 16 || (to - from) == -16) {
         if (to - from == 16) _game_state.en_passant_square = to - 8;
         else if (to - from == -16) _game_state.en_passant_square = to + 8;

@@ -26,7 +26,20 @@ class FEN
          */
         static std::string to_string(const GameState& game, const Bitboards& board);
 
+        /**
+         * @brief Gets the FEN notation of a piece.
+         *
+         * @param piece_color Color of the piece.
+         * @param piece_type Type of the piece.
+         * @return A char representing the piece into a FEN notation.
+         */
         static char piece_symbol(const Color piece_color, const PieceType piece_type);
 
+        /**
+         * @brief Gets the FEN notation of the castling rights.
+         *
+         * @param rights Binary notation of the rights (1 for right of castle, else 0).
+         * @return A string representing the castling rights of both sides in the game.
+         */
         static std::string castling_rights(int rights);
 };

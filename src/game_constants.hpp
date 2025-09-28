@@ -1,4 +1,4 @@
-// galme_constants.hpp
+// game_constants.hpp
 
 #pragma once
 

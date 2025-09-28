@@ -8,6 +8,7 @@
 #include "bitboards.hpp"
 #include "game_constants.hpp"
 #include "fen.hpp"
+
 #include <string>
 
 
@@ -41,22 +42,15 @@ class Game
         bool try_apply_move(const int from, const int to);
 
         /**
-         * @brief Gets the legal moves from a square.
-         *
-         * @param sq Square of the initial position.
-         * @return A vector of the possible (legal) moves to play.
-         */
-        std::vector<Move> get_legal_moves(const int sq);
-
-        /**
          * @brief Switch the current turn.
+         * 
          */
         void next_turn();
 
         /**
          * @brief Gets the state of the game.
          * 
-         * @return The game of the state (checkmate, ...).
+         * @return The state of the game (checkmate, ...).
          */
         EndGame get_game_state();
 
@@ -68,11 +62,17 @@ class Game
         Color get_current_turn() const;
 
         /**
-         * @brief Gets the current number of moves played in the game.
+         * @brief Gets the current number of moves played by a side during the game.
          * 
+         * @param side The color ot get the number of moves.
          * @return The number of moves.
          */
         int get_nb_moves(const Color side) const;
 
+        /**
+         * @brief Converts the current game state into its FEN notation.
+         * 
+         * @return A string represnting the current game state.
+         */
         std::string get_fen() const;
 };
