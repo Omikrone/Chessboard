@@ -25,5 +25,5 @@ class MoveGenerator
         static std::vector<Move> bishop_moves(const int square, const uint64_t side, const uint64_t opponent_side);
         static std::vector<Move> rook_moves(const int square, const uint64_t side, const uint64_t opponent_side);
         static std::vector<Move> queen_moves(const int square, const uint64_t side, const uint64_t opponent_side);
-        static std::vector<Move> king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, uint8_t castling_rights);
+        static std::vector<Move> king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, uint8_t castling_rights);
 };

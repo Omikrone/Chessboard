@@ -70,7 +70,7 @@ char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
         symbol = ' ';
         break;
     }
-    if (piece_color == Color::WHITE) return toupper(symbol);
+    if (piece_color == Color::WHITE) return (char)toupper(symbol);
     else return symbol;
 }
 

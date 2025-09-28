@@ -44,7 +44,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
         moves = queen_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
         break;
     case PieceType::KING:
-        moves = king_moves(square, side, game_state.colors[side], game_state.colors[opponent_side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
+        moves = king_moves(square, side, game_state.colors[side], game_state.colors[opponent_side], game_state.castling_rights);
         break;
     default:
         break;
@@ -154,7 +154,6 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t sid
 
     const int directions[] = {8, 1, -8, -1};
     int fromX = square % 8;
-    int fromY = square / 8;
     
     int count;
     for (int d: directions) {
@@ -164,7 +163,6 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t sid
             int to = square + d * count;
 
             int toX = to % 8;
-            int toY = to / 8;
             if (to < 0 || to > 63) break;
 
             if ((d == 1 || d == -1) && std::abs(toX - fromX) != count) break;
@@ -233,10 +231,9 @@ std::vector<Move> MoveGenerator::queen_moves(const int square, const uint64_t si
 }
 
 
-std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, uint8_t castling_rights) {
+std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, uint8_t castling_rights) {
     std::vector<Move> moves;
     
-    int count;
     for (int x = -1; x <= 1; x++)
     {
         for (int y = -1; y <= 1; y++)
