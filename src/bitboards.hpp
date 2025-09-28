@@ -15,7 +15,7 @@ struct GameState
     uint64_t all_pieces;
 
     Color side_to_move = Color::WHITE;
-    int castling_rights = INT32_MAX;
+    uint8_t castling_rights = UINT8_MAX;
     int en_passant_square = -1;
     int halfmove_clock = 0;
     int fullmove_number = 0;

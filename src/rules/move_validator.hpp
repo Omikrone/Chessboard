@@ -20,6 +20,8 @@ private:
 
     bool is_square_attacked(const int square, const Color opponent) const;
     bool is_king_in_check(const Color king_color) const;
+    bool check_castle(const Move& move, const Color king_color) const;
+    int find_king(const Color king_color) const;
 
 public:
     MoveValidator(GameState& position, Bitboards& board, MoveExecutor& executor);

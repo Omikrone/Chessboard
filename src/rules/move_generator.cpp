@@ -50,7 +50,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
         moves = queen_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
         break;
     case PieceType::KING:
-        moves = king_moves(square, game_state.colors[side], game_state.colors[opponent_side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
+        moves = king_moves(square, side, game_state.colors[side], game_state.colors[opponent_side], game_state.pieces[side][PieceType::ROOK], game_state.castling_rights);
         break;
     default:
         break;
@@ -239,7 +239,7 @@ std::vector<Move> MoveGenerator::queen_moves(const int square, const uint64_t si
 }
 
 
-std::vector<Move> MoveGenerator::king_moves(const int square, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, int castling_rights) {
+std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, const uint64_t rooks, uint8_t castling_rights) {
     std::vector<Move> moves;
     
     int count;
@@ -255,6 +255,20 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const uint64_t sid
             if (opponent_side & mask) moves.push_back({square, to, MoveType::NORMAL, true});
             else moves.push_back({square, to, MoveType::NORMAL, false});
         }
+    }
+
+    uint64_t all_pieces = side | opponent_side;
+    if ((castling_rights >> (side_c * 2 + 1) & 1) 
+    && ((all_pieces >> (square + 1)) & 1) == 0 
+    && ((all_pieces >> (square + 2)) & 0) == 0) {
+        std::cout << "CASTLE!!!!" << std::endl;
+        moves.push_back({square, square + 2, MoveType::CASTLE_KINGSIDE, false});
+    }
+    if ((castling_rights >> (side_c * 2 + 2) & 1) 
+    && ((all_pieces >> (square - 1)) & 0) == 0 
+    && ((all_pieces >> (square - 2)) & 0) == 0 
+    && ((all_pieces >> (square - 3)) & 0) == 0) {
+        moves.push_back({square, square - 2, MoveType::CASTLE_QUEENSIDE, false});
     }
 
     return moves;

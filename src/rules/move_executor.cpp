@@ -56,18 +56,28 @@ void MoveExecutor::normal(const Color side, const Move& move) {
     }
     PieceType piece_type = _board.get_piece_type(side, move.from);
     _board.move_piece(side, piece_type, move.from, move.to);
+    if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 7 || move.from == 63))) {
+        _game_state.castling_rights &= ~(1 << (side * 2 + 1));
+    }
+    if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 0 || move.from == 56))) {
+        _game_state.castling_rights &= ~(1 << (side * 2 + 2));
+    }
 }
 
 
 void MoveExecutor::castle_kingside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from + 3, move.from + 1);
+    _game_state.castling_rights &= ~((side * 2 + 1) << 0);
+    _game_state.castling_rights &= ~((side * 2 + 2) << 0);
 }
 
 
 void MoveExecutor::castle_queenside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from - 4, move.from - 1);
+    _game_state.castling_rights &= ~((side * 2 + 1) << 0);
+    _game_state.castling_rights &= ~((side * 2 + 2) << 0);
 }
 
 
