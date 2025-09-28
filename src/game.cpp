@@ -16,6 +16,7 @@ Game::Game()
 bool Game::try_apply_move(const int from, const int to) {
 
     _history.push(_game_state);
+    int en_passant = _game_state.en_passant_square;
 
     Color piece_color = _board.is_occupied(from);
     if (piece_color != _game_state.side_to_move) return false; // The player can't play a piece from the other side
@@ -30,6 +31,7 @@ bool Game::try_apply_move(const int from, const int to) {
             _executor.make_move(_game_state.side_to_move, m);
             std::cout << "GET OUT" << std::endl;
             _board.print_board(_game_state.colors[_game_state.side_to_move]);
+            if (_game_state.en_passant_square == en_passant) _game_state.en_passant_square = -1;
             return true;
         }
     }

@@ -20,7 +20,7 @@ class MoveGenerator
     public:
         static std::vector<Move> all_possible_moves(const Color side, const GameState& game_state, const Bitboards& board);
         static std::vector<Move> piece_moves(const int square, const Color side, const PieceType& piece_type, const GameState& game_state);
-        static std::vector<Move> pawn_moves(const int square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side);
+        static std::vector<Move> pawn_moves(const int square, const GameState& game_state, const Color side, const uint64_t empty_squares, const uint64_t opponent_side);
         static std::vector<Move> knight_moves(const int square, const uint64_t side, const uint64_t opponent_side);
         static std::vector<Move> bishop_moves(const int square, const uint64_t side, const uint64_t opponent_side);
         static std::vector<Move> rook_moves(const int square, const uint64_t side, const uint64_t opponent_side);

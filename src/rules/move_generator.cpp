@@ -33,7 +33,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
     switch (piece_type)
     {
     case PieceType::PAWN:
-        moves = pawn_moves(square, side, ~game_state.all_pieces, game_state.colors[opponent_side]);
+        moves = pawn_moves(square, game_state, side, ~game_state.all_pieces, game_state.colors[opponent_side]);
         break;
     case PieceType::BISHOP:
         std::cout << "BISHOP POSITION : " << std::endl;
@@ -59,7 +59,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
 }
 
 
-std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::pawn_moves(const int square, const GameState& game_state, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
     std::vector<Move> moves;
 
     if (side == Color::WHITE) {
@@ -71,11 +71,13 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side, 
                 }
             }
             if (square % 8 != 7 && ((opponent_side >> (square + 9)) & 1)) {
-                moves.push_back({square, square + 9, MoveType::NORMAL, true}); // Right side-take
+                moves.push_back({square, square + 9, MoveType::NORMAL, true});
             }
+            else if (square % 8 != 7 && (game_state.en_passant_square == square + 9)) moves.push_back({square, square + 9, MoveType::EN_PASSANT, true});
             if (square % 8 != 0 && ((opponent_side >> (square + 7)) & 1)) {
-                moves.push_back({square, square + 7, MoveType::NORMAL, true}); // Left side-take
+                moves.push_back({square, square + 7, MoveType::NORMAL, true});
             }
+            else if (square % 8 != 0 && (game_state.en_passant_square == square + 7)) moves.push_back({square, square + 7, MoveType::EN_PASSANT, true});
         }
         else if (square < 56)
         {
@@ -100,11 +102,13 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side, 
                 }
             }
             if (square % 8 != 7 && ((opponent_side >> (square - 9)) & 1)) {
-                moves.push_back({square, square - 9, MoveType::NORMAL, true}); // Right side-take
+                moves.push_back({square, square - 9, MoveType::NORMAL, true});
             }
+            else if (square % 8 != 7 && (game_state.en_passant_square == square - 9)) moves.push_back({square, square - 9, MoveType::EN_PASSANT, true});
             if (square % 8 != 0 && ((opponent_side >> (square - 7)) & 1)) {
-                moves.push_back({square, square - 7, MoveType::NORMAL, true}); // Left side-take
+                moves.push_back({square, square - 7, MoveType::NORMAL, true});
             }
+            else if (square % 8 != 0 && (game_state.en_passant_square == square - 7)) moves.push_back({square, square - 7, MoveType::EN_PASSANT, true});
         }
         else if (square >= 8)
         {

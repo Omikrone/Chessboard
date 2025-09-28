@@ -69,6 +69,10 @@ void Bitboards::move_piece(const Color side, const PieceType piece_type, const i
     update_all();
     std::cout << "GAMEBOARD: " << std::endl;
     print_board(_game_state.pieces[side][PieceType::PAWN]);
+    if (piece_type == PieceType::PAWN && (to - from) == 16 || (to - from) == -16) {
+        if (to - from == 16) _game_state.en_passant_square = to - 8;
+        else if (to - from == -16) _game_state.en_passant_square = to + 8;
+    }
 }
 
 

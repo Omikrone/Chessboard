@@ -55,7 +55,6 @@ void MoveExecutor::normal(const Color side, const Move& move) {
         _board.remove_piece(opponent_color, opponent_piece, move.to);
     }
     PieceType piece_type = _board.get_piece_type(side, move.from);
-    std::cout << "piece type : " << piece_type << std::endl;
     _board.move_piece(side, piece_type, move.from, move.to);
 }
 
