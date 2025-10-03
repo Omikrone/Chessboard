@@ -74,6 +74,7 @@ std::string Game::get_fen() const {
 
 std::vector<Move> Game::getAllMoves(const Color side) {
 
+    _history.push(_game_state);
     std::vector<Move> legalMoves;
 
     std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
