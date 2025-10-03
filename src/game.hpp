@@ -75,4 +75,11 @@ class Game
          * @return A string represnting the current game state.
          */
         std::string get_fen() const;
+
+        /**
+         * @brief Generates all legal moves for a side of the chessboard.
+         * 
+         * @return A vector of the moves
+         */
+        std::vector<Move> getAllMoves(const Color side);
 };

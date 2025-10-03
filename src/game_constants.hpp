@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 #define BOARD_LENGTH 8
 
 enum class EndGame {

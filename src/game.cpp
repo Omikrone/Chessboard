@@ -71,3 +71,17 @@ int Game::get_nb_moves(Color side) const {
 std::string Game::get_fen() const {
     return FEN::to_string(_game_state, _board);
 }
+
+std::vector<Move> Game::getAllMoves(const Color side) {
+
+    std::vector<Move> legalMoves;
+
+    std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
+    for (Move m: possible_moves) {
+        if (_validator.is_legal(m)) {
+            legalMoves.push_back(m);
+        }
+    }
+
+    return legalMoves;
+}
