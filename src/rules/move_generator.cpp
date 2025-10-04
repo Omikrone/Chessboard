@@ -251,13 +251,13 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c
     uint64_t all_pieces = side | opponent_side;
     if ((castling_rights >> (side_c * 2 + 1) & 1) 
     && ((all_pieces >> (square + 1)) & 1) == 0 
-    && ((all_pieces >> (square + 2)) & 0) == 0) {
+    && ((all_pieces >> (square + 2)) & 1) == 0) {
         moves.push_back({square, square + 2, MoveType::CASTLE_KINGSIDE, false});
     }
     if ((castling_rights >> (side_c * 2 + 2) & 1) 
-    && ((all_pieces >> (square - 1)) & 0) == 0 
-    && ((all_pieces >> (square - 2)) & 0) == 0 
-    && ((all_pieces >> (square - 3)) & 0) == 0) {
+    && ((all_pieces >> (square - 1)) & 1) == 0 
+    && ((all_pieces >> (square - 2)) & 1) == 0 
+    && ((all_pieces >> (square - 3)) & 1) == 0) {
         moves.push_back({square, square - 2, MoveType::CASTLE_QUEENSIDE, false});
     }
 
