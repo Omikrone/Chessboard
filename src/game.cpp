@@ -9,13 +9,11 @@ Game::Game()
         _history(_game_state),
         _executor(_history, _game_state, _board),
         _validator(_game_state, _board, _executor)
-      
 {}
 
 
 bool Game::try_apply_move(const int from, const int to) {
 
-    _history.push(_game_state);
     int en_passant = _game_state.en_passant_square;
 
     Color piece_color = _board.is_occupied(from);
@@ -40,21 +38,18 @@ EndGame Game::get_game_state() {
     _history.push(_game_state);
 
     // If the current player has at least one possible moves, the game isn't finished
-    std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
+    std::vector<Move> possible_moves = get_legal_moves(_game_state.side_to_move);
+    if (!possible_moves.empty()) return EndGame::CONTINUING;
 
-    for (Move m: possible_moves) {
-        if (_validator.is_legal(m)) {
-            return EndGame::CONTINUING;
-        }
-    }
-
-    if (possible_moves.empty()) return EndGame::STALEMATE;
-    else return EndGame::CHECKMATE;
+    // If the king is in check, it's checkmate, else it's stalemate
+    if (_validator.is_king_in_check(_game_state.side_to_move)) return EndGame::CHECKMATE;
+    else return EndGame::STALEMATE;
 }
 
 
 void Game::next_turn() {
     _game_state.side_to_move = (_game_state.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    _history.push(_game_state); // Save the game state before any changes
 }
 
 
@@ -68,21 +63,21 @@ int Game::get_nb_moves(Color side) const {
     else return _game_state.fullmove_number / 2;
 }
 
+
 std::string Game::get_fen() const {
     return FEN::to_string(_game_state, _board);
 }
 
-std::vector<Move> Game::getAllMoves(const Color side) {
 
-    _history.push(_game_state);
-    std::vector<Move> legalMoves;
+std::vector<Move> Game::get_legal_moves(const Color side) {
+    std::vector<Move> legal_moves;
 
     std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_game_state.side_to_move, _game_state, _board);
     for (Move m: possible_moves) {
         if (_validator.is_legal(m)) {
-            legalMoves.push_back(m);
+            legal_moves.push_back(m);
         }
     }
 
-    return legalMoves;
+    return legal_moves;
 }

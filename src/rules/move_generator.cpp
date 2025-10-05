@@ -233,13 +233,19 @@ std::vector<Move> MoveGenerator::queen_moves(const int square, const uint64_t si
 
 std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c, const uint64_t side, const uint64_t opponent_side, uint8_t castling_rights) {
     std::vector<Move> moves;
+    int fromX = square % 8;
+    int fromY = square / 8;
     
     for (int x = -1; x <= 1; x++)
     {
         for (int y = -1; y <= 1; y++)
         {
+            if (x == 0 && y == 0) continue;
+            int toX = fromX + x;
+            int toY = fromY + y;
+            
+            if (toX < 0 || toX > 7 || toY < 0 || toY > 7) continue;
             int to = square + x + y * 8;
-            if (to < 0 || to > 63) continue;
             
             uint64_t mask = 1ULL << to;
             if (side & mask) continue;

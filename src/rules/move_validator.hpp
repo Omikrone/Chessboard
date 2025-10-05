@@ -33,13 +33,6 @@ class MoveValidator
          */
         bool is_square_attacked(const int square, const Color opponent) const;
 
-        /**
-         * @brief Checks if a king is in check by the opponent.
-         *
-         * @param king_color The color of the king.
-         * @return true if the king is in check, else false.
-         */
-        bool is_king_in_check(const Color king_color) const;
 
         /**
          * @brief Checks if a castle move is legal or not.
@@ -71,4 +64,13 @@ class MoveValidator
          * @return true if the move is legal, else false.
          */
         bool is_legal(const Move& move);
+
+
+        /**
+         * @brief Checks if a king is in check by the opponent.
+         *
+         * @param king_color The color of the king.
+         * @return true if the king is in check, else false.
+         */
+        bool is_king_in_check(const Color king_color) const;
 };

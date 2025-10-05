@@ -17,6 +17,7 @@ bool MoveValidator::is_square_attacked(const int square, const Color opponent) c
     return false;
 }
 
+
 int MoveValidator::find_king(const Color king_color) const {
     int square = -1;
     for (int i = 0; i < 64; i++) {
@@ -49,6 +50,9 @@ bool MoveValidator::is_legal(const Move& move) {
     _executor.unmake_last_move();
     return result;
 }
+
+
+
 
 
 bool MoveValidator::check_castle(const Move& move, const Color king_color) const {
