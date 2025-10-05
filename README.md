@@ -3,9 +3,9 @@
 
 ## Introduction
 
-- **Current version:** 1.0.0
+- **Current version:** 1.1.0
 
-This project is a simple chess game implementation in C++, optimized for performance with bitboards. It is intended to be the main library of the (chess game)[https://github.com/Omikrone/Chessgame], and the future chess engine *Euphron*. It is designed to be as fast as possible, and has achieved the following performance metrics compared to a naive implementation (the old one):
+This project is a simple chess game implementation in C++, optimized for performance with bitboards. It is intended to be the main library of the (chess game)[https://github.com/Omikrone/Chessgame], and the chess engine *Euphron*. It is designed to be as fast as possible, and has achieved the following performance metrics compared to a naive implementation (the old one):
 - **Move generation and application:** ~60 microseconds (naive: ~2000 microseconds)
 
 
@@ -16,6 +16,7 @@ This chess game includes the following features:
 - Move generation and application using bitboards for efficiency.
 - FEN conversion for easy game state representation.
 - A public API for compatibility with other chess engines and interfaces.
+- Cancelation of moves for chess engine implementations.
 
 
 ## Installation
@@ -53,6 +54,6 @@ Follow the steps described in the [chessgame repository](https://github.com/Omik
 ## Future Improvements
 
 Future improvements for this project will include:
-- [ ] Fixing the issue of non-detection of stale mate.
+- [X] Fixing the issue of non-detection of stale mate.
 - [ ] Adding zobrist hashing for detecting threefold repetition and other advanced rules.
 - [ ] Optimizing the move generation further.
