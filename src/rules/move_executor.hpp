@@ -28,6 +28,8 @@ class MoveExecutor
          */
         void normal(const Color side, const Move& move);
 
+        void undo_normal(const Color side, const Move& move);
+
         /**
          * @brief Applies a kingside castle on the board.
          *
@@ -35,6 +37,8 @@ class MoveExecutor
          * @param move Move to apply.
          */
         void castle_kingside(const Color side, const Move& move);
+
+        void undo_castle_kingside(const Color side, const Move& move);
 
         /**
          * @brief Applies a queenside castle on the board.
@@ -44,6 +48,8 @@ class MoveExecutor
          */
         void castle_queenside(const Color side, const Move& move);
 
+        void undo_castle_queenside(const Color side, const Move& move);
+
         /**
          * @brief Applies an en passant move on the board.
          *
@@ -51,6 +57,8 @@ class MoveExecutor
          * @param move Move to apply.
          */
         void en_passant(const Color side, const Move& move);
+
+        void undo_en_passant(const Color side, const Move& move);
 
         /**
          * @brief Applies a pawn promotion on the board.
@@ -60,6 +68,8 @@ class MoveExecutor
          * @param new_piece New piece to replace the pawn with.
          */
         void promotion(const Color side, const int square, const PieceType new_piece);
+
+        void undo_promotion(const Color side, const Move& move);
 
     public:
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "bitboards.hpp"
+#include "components/move.hpp"
 
 #include <vector>
 #include <cassert>
@@ -17,11 +18,11 @@ class GameHistory {
 
     private:
 
-        std::vector<GameState> _history;
+        std::vector<UndoMove> _history;
 
     public:
 
-        GameHistory(GameState game_state);
+        GameHistory(UndoMove game_state);
 
         ~GameHistory() = default;
 
@@ -30,20 +31,20 @@ class GameHistory {
          *
          * @param game_state The current state of the game.
          */
-        void push(GameState game_state);
+        void push(UndoMove game_state);
 
         /**
          * @brief Removes the last game state played from the history.
          * 
          */
-        void pop();
+        UndoMove pop();
 
         /**
          * @brief Gets the last game state added.
          *
          * @return The state of the game.
          */
-        GameState last() const;
+        UndoMove last() const;
 
         /**
          * @brief Verifies if the history is empty.

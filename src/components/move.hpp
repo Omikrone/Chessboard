@@ -37,3 +37,15 @@ struct Move
         std::cout << "{" << std::to_string(this->from) << " : " << std::to_string(this->to) << "}" << std::endl;
     }
 };
+
+
+struct UndoMove
+{
+    Move move;
+
+    Color side_to_move = Color::WHITE;
+    uint8_t castling_rights = UINT8_MAX;
+    int en_passant_square = -1;
+    int halfmove_clock = 0;
+    int fullmove_number = 0;
+};

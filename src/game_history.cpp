@@ -3,19 +3,21 @@
 #include "game_history.hpp"
 
 
-GameHistory::GameHistory(GameState game_state) {
+GameHistory::GameHistory(UndoMove game_state) {
     push(game_state);
 }
 
-void GameHistory::push(GameState game_state) {
+void GameHistory::push(UndoMove game_state) {
     _history.push_back(game_state);
 }
 
-void GameHistory::pop() {
-    return _history.pop_back();
+UndoMove GameHistory::pop() {
+    UndoMove undo = _history.back();
+    _history.pop_back();
+    return undo;
 }
 
-GameState GameHistory::last() const {
+UndoMove GameHistory::last() const {
     assert(!_history.empty());
     return _history.back();
 }
