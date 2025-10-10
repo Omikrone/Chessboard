@@ -82,4 +82,8 @@ class Game
          * @return A vector of the moves
          */
         std::vector<Move> get_legal_moves(const Color side);
+
+        Bitboards& get_board();
+
+        void unmake_move()
 };

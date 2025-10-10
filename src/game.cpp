@@ -81,3 +81,13 @@ std::vector<Move> Game::get_legal_moves(const Color side) {
 
     return legal_moves;
 }
+
+
+Bitboards& Game::get_board() {
+    return _board;
+}
+
+
+void Game::unmake_move() {
+    _executor.unmake_last_move();
+}
