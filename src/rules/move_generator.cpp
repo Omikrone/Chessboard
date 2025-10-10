@@ -53,71 +53,86 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
 }
 
 
-std::vector<Move> MoveGenerator::pawn_moves(const int square, const GameState& game_state, const Color side, const uint64_t empty_squares, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::pawn_moves(
+    const int square,
+    const GameState& game_state,
+    const Color side,
+    const uint64_t empty_squares,
+    const uint64_t opponent_side)
+{
     std::vector<Move> moves;
 
+    int rank = square / 8;
+    int file = square % 8;
+
     if (side == Color::WHITE) {
-        if (square < 48) { //?
+        // Avance simple
+        if (rank < 7) {
             if ((empty_squares >> (square + 8)) & 1) {
-                moves.push_back({square, square + 8, MoveType::NORMAL, false});  // One-step forward walk
-                if (square <= 15 && square >= 8 && ((empty_squares >> (square + 16)) & 1)) { 
-                    moves.push_back({square, square + 16, MoveType::NORMAL, false});   // Two-step forward walk
-                }
-            }
-            if (square % 8 != 7 && ((opponent_side >> (square + 9)) & 1)) {
-                moves.push_back({square, square + 9, MoveType::NORMAL, true});
-            }
-            else if (square % 8 != 7 && (game_state.en_passant_square == square + 9)) moves.push_back({square, square + 9, MoveType::EN_PASSANT, true});
-            if (square % 8 != 0 && ((opponent_side >> (square + 7)) & 1)) {
-                moves.push_back({square, square + 7, MoveType::NORMAL, true});
-            }
-            else if (square % 8 != 0 && (game_state.en_passant_square == square + 7)) moves.push_back({square, square + 7, MoveType::EN_PASSANT, true});
-        }
-        else if (square < 56)
-        {
-            if ((empty_squares >> (square + 8)) & 1) {
-                moves.push_back({square, square + 8, MoveType::PROMOTION, false});  // One-step forward walk
-            }
-            if (square % 8 != 7 && ((opponent_side >> (square + 9)) & 1)) {
-                moves.push_back({square, square + 9, MoveType::PROMOTION, true}); // Right side-take
-            }
-            if (square % 8 != 0 && ((opponent_side >> (square + 7)) & 1)) {
-                moves.push_back({square, square + 7, MoveType::PROMOTION, true}); // Left side-take
+                if (rank == 6) moves.push_back({square, square + 8, MoveType::PROMOTION, false});
+                else moves.push_back({square, square + 8, MoveType::NORMAL, false});
+
+                // Avance double depuis la 2e rangée
+                if (rank == 1 && ((empty_squares >> (square + 16)) & 1))
+                    moves.push_back({square, square + 16, MoveType::NORMAL, false});
             }
         }
-        
+
+        // Captures diagonales
+        if (rank < 7) {
+            // capture à droite (vers file + 1)
+            if (file < 7) {
+                int target = square + 9;
+                if ((opponent_side >> target) & 1)
+                    moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
+                else if (game_state.en_passant_square == target)
+                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
+            }
+
+            // capture à gauche (vers file - 1)
+            if (file > 0) {
+                int target = square + 7;
+                if ((opponent_side >> target) & 1)
+                    moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
+                else if (game_state.en_passant_square == target)
+                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
+            }
+        }
     }
-    if (side == Color::BLACK) {
-        if (square >= 16) {
+
+    else { // BLACK
+        if (rank > 0) {
             if ((empty_squares >> (square - 8)) & 1) {
-                moves.push_back({square, square - 8, MoveType::NORMAL, false});
-                if (square <= 55 && square >= 48 && ((empty_squares >> (square - 16)) & 1)) {
+                if (rank == 1) moves.push_back({square, square - 8, MoveType::PROMOTION, false});
+                else moves.push_back({square, square - 8, MoveType::NORMAL, false});
+
+                if (rank == 6 && ((empty_squares >> (square - 16)) & 1))
                     moves.push_back({square, square - 16, MoveType::NORMAL, false});
-                }
-            }
-            if (square % 8 != 7 && ((opponent_side >> (square - 9)) & 1)) {
-                moves.push_back({square, square - 9, MoveType::NORMAL, true});
-            }
-            else if (square % 8 != 7 && (game_state.en_passant_square == square - 9)) moves.push_back({square, square - 9, MoveType::EN_PASSANT, true});
-            if (square % 8 != 0 && ((opponent_side >> (square - 7)) & 1)) {
-                moves.push_back({square, square - 7, MoveType::NORMAL, true});
-            }
-            else if (square % 8 != 0 && (game_state.en_passant_square == square - 7)) moves.push_back({square, square - 7, MoveType::EN_PASSANT, true});
-        }
-        else if (square >= 8)
-        {
-            if ((empty_squares >> (square - 8)) & 1) {
-                moves.push_back({square, square - 8, MoveType::PROMOTION, false});
-            }
-            if (square % 8 != 7 && ((opponent_side >> (square - 9)) & 1)) {
-                moves.push_back({square, square - 9, MoveType::PROMOTION, true}); // Right side-take
-            }
-            if (square % 8 != 0 && ((opponent_side >> (square - 7)) & 1)) {
-                moves.push_back({square, square - 7, MoveType::PROMOTION, true}); // Left side-take
             }
         }
-        
+
+        // Captures diagonales
+        if (rank > 0) {
+            // capture à droite (vers file + 1)
+            if (file < 7) {
+                int target = square - 7;
+                if ((opponent_side >> target) & 1)
+                    moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
+                else if (game_state.en_passant_square == target)
+                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
+            }
+
+            // capture à gauche (vers file - 1)
+            if (file > 0) {
+                int target = square - 9;
+                if ((opponent_side >> target) & 1)
+                    moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
+                else if (game_state.en_passant_square == target)
+                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
+            }
+        }
     }
+
     return moves;
 }
 

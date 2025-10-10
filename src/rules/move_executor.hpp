@@ -26,9 +26,9 @@ class MoveExecutor
          * @param side Player which wants to apply the move.
          * @param move Move to apply.
          */
-        void normal(const Color side, const Move& move);
+        void normal(UndoMove& undo, const Color side, const Move& move);
 
-        void undo_normal(const Color side, const Move& move);
+        void undo_normal(const Color side, const Move& move, PieceType taken_piece);
 
         /**
          * @brief Applies a kingside castle on the board.
@@ -56,9 +56,9 @@ class MoveExecutor
          * @param side Player which wants to apply the move.
          * @param move Move to apply.
          */
-        void en_passant(const Color side, const Move& move);
+        void en_passant(UndoMove& undo, const Color side, const Move& move);
 
-        void undo_en_passant(const Color side, const Move& move);
+        void undo_en_passant(const Color side, const Move& move, int en_passant_square);
 
         /**
          * @brief Applies a pawn promotion on the board.

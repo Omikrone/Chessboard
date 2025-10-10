@@ -14,8 +14,6 @@ Game::Game()
 
 bool Game::try_apply_move(const int from, const int to) {
 
-    int en_passant = _game_state.en_passant_square;
-
     Color piece_color = _board.is_occupied(from);
     if (piece_color != _game_state.side_to_move) return false; // The player can't play a piece from the other side
     PieceType piece_type = _board.get_piece_type(_game_state.side_to_move, from);
@@ -25,7 +23,6 @@ bool Game::try_apply_move(const int from, const int to) {
     for (Move m: moves) {
         if (m.from == from && m.to == to && _validator.is_legal(m)) {
             _executor.make_move(_game_state.side_to_move, m);
-            if (_game_state.en_passant_square == en_passant) _game_state.en_passant_square = -1;
             return true;
         }
     }

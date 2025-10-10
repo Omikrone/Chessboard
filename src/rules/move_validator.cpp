@@ -52,9 +52,6 @@ bool MoveValidator::is_legal(const Move& move) {
 }
 
 
-
-
-
 bool MoveValidator::check_castle(const Move& move, const Color king_color) const {
     int square = find_king(king_color);
     Color opponent_color = (king_color == Color::WHITE) ? Color::BLACK : Color::WHITE;

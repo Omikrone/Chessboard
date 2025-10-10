@@ -4,6 +4,16 @@
 
 
 GameHistory::GameHistory() {
+    Move first_move = {0, 0};
+    UndoMove undo = {
+        first_move,
+        Color::WHITE,
+        UINT8_MAX,
+        -1,
+        0,
+        0
+    };
+    push(undo);
 }
 
 void GameHistory::push(UndoMove game_state) {
