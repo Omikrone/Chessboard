@@ -6,7 +6,7 @@
 
 Game::Game()
     :   _board(_game_state),
-        _history(_game_state),
+        _history(),
         _executor(_history, _game_state, _board),
         _validator(_game_state, _board, _executor)
 {}
@@ -35,8 +35,6 @@ bool Game::try_apply_move(const int from, const int to) {
 
 EndGame Game::get_game_state() {
 
-    _history.push(_game_state);
-
     // If the current player has at least one possible moves, the game isn't finished
     std::vector<Move> possible_moves = get_legal_moves(_game_state.side_to_move);
     if (!possible_moves.empty()) return EndGame::CONTINUING;
@@ -49,7 +47,6 @@ EndGame Game::get_game_state() {
 
 void Game::next_turn() {
     _game_state.side_to_move = (_game_state.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE;
-    _history.push(_game_state); // Save the game state before any changes
 }
 
 

@@ -22,7 +22,7 @@ class GameHistory {
 
     public:
 
-        GameHistory(UndoMove game_state);
+        GameHistory();
 
         ~GameHistory() = default;
 

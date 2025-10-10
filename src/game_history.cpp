@@ -3,8 +3,7 @@
 #include "game_history.hpp"
 
 
-GameHistory::GameHistory(UndoMove game_state) {
-    push(game_state);
+GameHistory::GameHistory() {
 }
 
 void GameHistory::push(UndoMove game_state) {

@@ -85,5 +85,5 @@ class Game
 
         Bitboards& get_board();
 
-        void unmake_move()
+        void unmake_move();
 };
