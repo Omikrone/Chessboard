@@ -71,8 +71,8 @@ void MoveExecutor::unmake_last_move() {
             undo_en_passant(undo.side_to_move, undo.move, undo.en_passant_square);
             break;
         case MoveType::PROMOTION:
-            undo_normal(undo.side_to_move, undo.move, undo.taken_piece);
             undo_promotion(undo.side_to_move, undo.move);
+            undo_normal(undo.side_to_move, undo.move, undo.taken_piece); 
             break;
         default:
             undo_normal(undo.side_to_move, undo.move, undo.taken_piece);
@@ -119,8 +119,7 @@ void MoveExecutor::undo_normal(const Color side, const Move& move, PieceType tak
 void MoveExecutor::castle_kingside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from + 3, move.from + 1);
-    _game_state.castling_rights &= ~((side * 2 + 1) << 0);
-    _game_state.castling_rights &= ~((side * 2 + 2) << 0);
+    _game_state.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
 }
 
 void MoveExecutor::undo_castle_kingside(const Color side, const Move& move) {
@@ -132,13 +131,12 @@ void MoveExecutor::undo_castle_kingside(const Color side, const Move& move) {
 void MoveExecutor::castle_queenside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from - 4, move.from - 1);
-    _game_state.castling_rights &= ~((side * 2 + 1) << 0);
-    _game_state.castling_rights &= ~((side * 2 + 2) << 0);
+    _game_state.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
 }
 
 void MoveExecutor::undo_castle_queenside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.to, move.from);
-    _board.move_piece(side, PieceType::ROOK, move.from + 3, move.from + 1);
+    _board.move_piece(side, PieceType::ROOK, move.from - 1, move.from - 4);
 }
 
 
