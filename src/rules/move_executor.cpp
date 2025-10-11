@@ -13,6 +13,11 @@ MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& bo
 
 void MoveExecutor::make_move(const Color side, const Move& move) {
     UndoMove undo;
+    undo.castling_rights = _game_state.castling_rights;
+    undo.fullmove_number = _game_state.fullmove_number;
+    undo.en_passant_square = _game_state.en_passant_square;
+    undo.halfmove_clock = _game_state.halfmove_clock;
+    undo.side_to_move = _game_state.side_to_move;
 
     switch (move.type)
     {
@@ -33,12 +38,19 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
             normal(undo, side, move);
             break;
     }
+    PieceType piece_type = _board.get_piece_type(side, move.to);
+    if (piece_type == PieceType::PAWN) {
+        if (std::abs(move.from - move.to) == 16) {
+            _game_state.en_passant_square = (move.from + move.to) / 2;
+        } else {
+            _game_state.en_passant_square = -1;
+        }
+    } else {
+        _game_state.en_passant_square = -1;
+    }
     
     undo.move = move;
-    undo.castling_rights = _game_state.castling_rights;
-    undo.fullmove_number = _game_state.fullmove_number;
-    undo.halfmove_clock = _game_state.halfmove_clock;
-    undo.side_to_move = _game_state.side_to_move;
+
     _history.push(undo);
 }
 
@@ -46,11 +58,6 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
 void MoveExecutor::unmake_last_move() {
     
     UndoMove undo = _history.pop();
-    _game_state.castling_rights = undo.castling_rights;
-    _game_state.en_passant_square = undo.en_passant_square;
-    _game_state.fullmove_number = undo.fullmove_number;
-    _game_state.halfmove_clock = undo.halfmove_clock;
-    _game_state.side_to_move = undo.side_to_move;
 
     switch (undo.move.type)
     {
@@ -71,6 +78,11 @@ void MoveExecutor::unmake_last_move() {
             undo_normal(undo.side_to_move, undo.move, undo.taken_piece);
             break;
     }
+    _game_state.castling_rights = undo.castling_rights;
+    _game_state.en_passant_square = undo.en_passant_square;
+    _game_state.fullmove_number = undo.fullmove_number;
+    _game_state.halfmove_clock = undo.halfmove_clock;
+    _game_state.side_to_move = undo.side_to_move;
 }
 
 
@@ -101,7 +113,6 @@ void MoveExecutor::undo_normal(const Color side, const Move& move, PieceType tak
         Color opponent_color = (side == Color::WHITE ? Color::BLACK : Color::WHITE);
         _board.add_piece(opponent_color, taken_piece, move.to);
     }
-
 }
 
 
@@ -134,21 +145,20 @@ void MoveExecutor::undo_castle_queenside(const Color side, const Move& move) {
 void MoveExecutor::en_passant(UndoMove& undo, const Color side, const Move& move) {
     _board.move_piece(side, PieceType::PAWN, move.from, move.to);
     Color opponent_color = (side == Color::WHITE ? Color::BLACK : Color::WHITE);
-    int en_passant_square;
+    int en_passant_square = move.to;
     if (side == Color::WHITE) {
-        en_passant_square = move.to - 8;
+        _board.remove_piece(opponent_color, PieceType::PAWN, en_passant_square - 8);
     }
     else {
-        en_passant_square = move.to + 8;
+        _board.remove_piece(opponent_color, PieceType::PAWN, en_passant_square + 8);
     }
-    _board.remove_piece(opponent_color, PieceType::PAWN, en_passant_square);
-    undo.en_passant_square = en_passant_square;
 }
 
 void MoveExecutor::undo_en_passant(const Color side, const Move& move, int en_passant_square) {
     _board.move_piece(side, PieceType::PAWN, move.to, move.from);
     Color opponent_color = (side == Color::WHITE ? Color::BLACK : Color::WHITE);
-    _board.add_piece(opponent_color, PieceType::PAWN, en_passant_square);
+    if (side == Color::WHITE) _board.add_piece(opponent_color, PieceType::PAWN, en_passant_square - 8);
+    else _board.add_piece(opponent_color, PieceType::PAWN, en_passant_square + 8);
     std::cout << "en passant quare : " << en_passant_square << std::endl;
     std::cout << "Move in question : ";
     move.print();

@@ -85,7 +85,7 @@ std::vector<Move> MoveGenerator::pawn_moves(
                 int target = square + 9;
                 if ((opponent_side >> target) & 1)
                     moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square == target)
+                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
 
@@ -94,7 +94,7 @@ std::vector<Move> MoveGenerator::pawn_moves(
                 int target = square + 7;
                 if ((opponent_side >> target) & 1)
                     moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square == target)
+                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
         }
@@ -118,7 +118,7 @@ std::vector<Move> MoveGenerator::pawn_moves(
                 int target = square - 7;
                 if ((opponent_side >> target) & 1)
                     moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square == target)
+                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
 
@@ -127,7 +127,7 @@ std::vector<Move> MoveGenerator::pawn_moves(
                 int target = square - 9;
                 if ((opponent_side >> target) & 1)
                     moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square == target)
+                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
         }
