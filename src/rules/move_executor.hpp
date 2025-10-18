@@ -48,16 +48,29 @@ class MoveExecutor
          */
         void castle_queenside(const Color side, const Move& move);
 
+        /**
+         * @brief Undo the queenside castle on the board.
+         *
+         * @param side Player which applied the move.
+         * @param move Move to cancel.
+         */
         void undo_castle_queenside(const Color side, const Move& move);
 
         /**
          * @brief Applies an en passant move on the board.
          *
+         * @param undo The undo structure to fill.
          * @param side Player which wants to apply the move.
          * @param move Move to apply.
          */
         void en_passant(UndoMove& undo, const Color side, const Move& move);
 
+        /**
+         * @brief Cancels an en passant move on the board.
+         *
+         * @param side Player which applied the move.
+         * @param move The move to cancel.
+         */
         void undo_en_passant(const Color side, const Move& move, int en_passant_square);
 
         /**
@@ -69,6 +82,12 @@ class MoveExecutor
          */
         void promotion(const Color side, const int square, const PieceType new_piece);
 
+        /**
+         * @brief Cancels a pawn promotion on the board.
+         *
+         * @param side Player which wants to apply the move.
+         * @param move The Move to cancel.
+         */
         void undo_promotion(const Color side, const Move& move);
 
     public:
@@ -81,12 +100,12 @@ class MoveExecutor
          * @brief Applies a move on the game board.
          *
          * @param side Player which wants to apply the move.
-         * @param move Move to apply.
+         * @param move The move to apply.
          */
         void make_move(const Color side, const Move& move);
 
         /**
-         * @brief Restores the previous game state before the last move.
+         * @brief Cancels the last move made and restores the previous game state before.
          * 
          */
         void unmake_last_move();

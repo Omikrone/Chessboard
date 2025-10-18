@@ -157,9 +157,6 @@ void MoveExecutor::undo_en_passant(const Color side, const Move& move, int en_pa
     Color opponent_color = (side == Color::WHITE ? Color::BLACK : Color::WHITE);
     if (side == Color::WHITE) _board.add_piece(opponent_color, PieceType::PAWN, en_passant_square - 8);
     else _board.add_piece(opponent_color, PieceType::PAWN, en_passant_square + 8);
-    std::cout << "en passant quare : " << en_passant_square << std::endl;
-    std::cout << "Move in question : ";
-    move.print();
 }
 
 void MoveExecutor::promotion(const Color side, const int square, const PieceType new_piece) {

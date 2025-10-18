@@ -3,9 +3,9 @@
 
 ## Introduction
 
-- **Current version:** 1.1.0
+- **Current version:** 1.2.0
 
-This project is a simple chess game implementation in C++, optimized for performance with bitboards. It is intended to be the main library of the (chess game)[https://github.com/Omikrone/Chessgame], and the chess engine *Euphron*. It is designed to be as fast as possible, and has achieved the following performance metrics compared to a naive implementation (the old one):
+This project is a simple chess game implementation in C++, optimized for performance with bitboards. It is intended to be the main library of the (chess game)[https://github.com/Omikrone/Chessgame], and the chess engine (Euphron)[https://github.com/Omikrone/Euphron]. It is designed to be as fast as possible, and has achieved the following performance metrics compared to a naive implementation (the old one):
 - **Move generation and application:** ~60 microseconds (naive: ~2000 microseconds)
 
 
@@ -16,7 +16,7 @@ This chess game includes the following features:
 - Move generation and application using bitboards for efficiency.
 - FEN conversion for easy game state representation.
 - A public API for compatibility with other chess engines and interfaces.
-- Cancelation of moves for chess engine implementations.
+- Cancellation of moves for chess engine implementations.
 
 
 ## Installation
@@ -39,7 +39,7 @@ Make sure you have the following dependencies installed:
     cd Chessboard
 ```
 
-2. Build the C++ server using CMake:
+2. Build the Chessboard library using CMake:
 ```bash
     cmake -S . -B build
     cd build && cmake --build . --config Release

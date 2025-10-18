@@ -79,11 +79,20 @@ class Game
         /**
          * @brief Generates all legal moves for a side of the chessboard.
          * 
-         * @return A vector of the moves
+         * @return A vector of the moves.
          */
         std::vector<Move> get_legal_moves(const Color side);
 
+        /**
+         * @brief Gets the board of the game.
+         * 
+         * @return The board.
+         */
         Bitboards& get_board();
 
+        /**
+         * @brief Cancels the last move made on the board and restores the previous state.
+         * 
+         */
         void unmake_move();
 };
