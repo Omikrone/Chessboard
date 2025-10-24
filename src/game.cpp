@@ -35,15 +35,19 @@ bool Game::try_apply_move(const int from, const int to) {
 EndGame Game::get_game_state() {
 
     bool repetition = true;
-    for (int i = 1; i < 4; i++)
+    int counter = 0;
+    for (int i = 1; i <= _history.size(); i++)
     {
-        if (_history.at(_history.size() - i).zobrist_hash == _game_state.zobrist_hash) {
+        if (_history.size() < 6) {
             repetition = false;
             break;
         }
+        if (_history.at(_history.size() - i).zobrist_hash == _game_state.zobrist_hash) {
+            counter++;
+        }
     }
 
-    if (repetition) return EndGame::STALEMATE;
+    if (counter >= 3) return EndGame::STALEMATE;
 
     // If the current player has at least one possible moves, the game isn't finished
     std::vector<Move> possible_moves = get_legal_moves(_game_state.side_to_move);
