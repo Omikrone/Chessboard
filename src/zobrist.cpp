@@ -3,7 +3,9 @@
 #include "zobrist.hpp"
 
 
-Zobrist::Zobrist()
+Zobrist::Zobrist(GameState& game_state, Bitboards& board):
+_game_state(game_state),
+_board(board)
 {
     std::srand(std::time({}));
     
@@ -16,15 +18,15 @@ Zobrist::Zobrist()
     }
 }
 
-const int Zobrist::hash(GameState& game_state, Bitboards& board) {
+const int Zobrist::hash() {
     int hash = 0;
 
-    if (game_state.side_to_move == Color::BLACK) hash ^= game_state.side_to_move;
+    if (_game_state.side_to_move == Color::BLACK) hash ^= _game_state.side_to_move;
     for (int i = 0; i < 64; i++)
     {
-        Color side = board.is_occupied(i);
+        Color side = _board.is_occupied(i);
         if (side != Color::NONE) {
-            hash ^= board.get_piece_type(side, i);
+            hash ^= _board.get_piece_type(side, i);
         }
     }
     return hash;

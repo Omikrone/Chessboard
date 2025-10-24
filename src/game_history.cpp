@@ -38,3 +38,7 @@ bool GameHistory::empty() const {
 size_t GameHistory::size() const {
     return _history.size();
 }
+
+UndoMove GameHistory::at(int index) const {
+    return _history.at(index);
+}

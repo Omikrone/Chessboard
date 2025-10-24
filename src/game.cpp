@@ -1,13 +1,15 @@
 // game.cpp
 
 #include "game.hpp"
+
 #include <iostream>
 
 
 Game::Game()
     :   _board(_game_state),
         _history(),
-        _executor(_history, _game_state, _board),
+        _zobrist(_game_state, _board),
+        _executor(_history, _game_state, _board, _zobrist),
         _validator(_game_state, _board, _executor)
 {}
 
@@ -31,6 +33,17 @@ bool Game::try_apply_move(const int from, const int to) {
 
 
 EndGame Game::get_game_state() {
+
+    bool repetition = true;
+    for (int i = 1; i < 4; i++)
+    {
+        if (_history.at(_history.size() - i).zobrist_hash == _game_state.zobrist_hash) {
+            repetition = false;
+            break;
+        }
+    }
+
+    if (repetition) return EndGame::STALEMATE;
 
     // If the current player has at least one possible moves, the game isn't finished
     std::vector<Move> possible_moves = get_legal_moves(_game_state.side_to_move);

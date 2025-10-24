@@ -9,9 +9,12 @@ class Zobrist
 {
     private:
         int _table[64][12];
+        GameState& _game_state;
+        Bitboards& _board;
+        
     public:
-        Zobrist();
+        Zobrist(GameState& game_state, Bitboards& board);
         ~Zobrist() = default;
 
-        const int hash(GameState& game_state, Bitboards& board);
+        const int hash();
 };

@@ -49,4 +49,5 @@ struct UndoMove
     int halfmove_clock = 0;
     int fullmove_number = 0;
     PieceType taken_piece= PieceType::NONE_PIECE;
+    int zobrist_hash = INT64_MAX;
 };

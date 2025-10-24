@@ -5,6 +5,7 @@
 #include "bitboards.hpp"
 #include "components/move.hpp"
 #include "game_history.hpp"
+#include "zobrist.hpp"
 
 
 /**
@@ -19,6 +20,7 @@ class MoveExecutor
         GameHistory& _history;
         GameState& _game_state;
         Bitboards& _board;
+        Zobrist& _zobrist;
 
         /**
          * @brief Executes a normal move on the board.
@@ -92,7 +94,7 @@ class MoveExecutor
 
     public:
 
-        MoveExecutor(GameHistory& history, GameState& state, Bitboards& board);
+        MoveExecutor(GameHistory& history, GameState& state, Bitboards& board, Zobrist& zobrist);
 
         ~MoveExecutor() = default;
 

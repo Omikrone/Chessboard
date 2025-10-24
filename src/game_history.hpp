@@ -59,4 +59,6 @@ class GameHistory {
          * @return The size of the history.
          */
         size_t size() const;
+
+        UndoMove at(int index) const;
 };

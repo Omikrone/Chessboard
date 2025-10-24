@@ -19,6 +19,7 @@ struct GameState
     int en_passant_square = -1;
     int halfmove_clock = 0;
     int fullmove_number = 0;
+    int zobrist_hash = INT64_MAX;
 };
 
 

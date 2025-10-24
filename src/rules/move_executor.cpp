@@ -4,10 +4,11 @@
 #include <iostream>
 
 
-MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& board):
+MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& board, Zobrist& zobrist):
     _history(history),
     _game_state(state),
-    _board(board)
+    _board(board),
+    _zobrist(zobrist)
     {}
 
 
@@ -50,6 +51,7 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
     }
     
     undo.move = move;
+    undo.zobrist_hash = _zobrist.hash();
 
     _history.push(undo);
 }
@@ -83,6 +85,7 @@ void MoveExecutor::unmake_last_move() {
     _game_state.fullmove_number = undo.fullmove_number;
     _game_state.halfmove_clock = undo.halfmove_clock;
     _game_state.side_to_move = undo.side_to_move;
+    _game_state.zobrist_hash = undo.zobrist_hash;
 }
 
 

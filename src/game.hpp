@@ -8,6 +8,7 @@
 #include "bitboards.hpp"
 #include "game_constants.hpp"
 #include "fen.hpp"
+#include "zobrist.hpp"
 
 #include <string>
 
@@ -26,6 +27,7 @@ class Game
         MoveValidator _validator;
         MoveExecutor _executor;
         GameHistory _history;
+        Zobrist _zobrist;
 
     public:
 
