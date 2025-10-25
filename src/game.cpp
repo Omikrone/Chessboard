@@ -28,11 +28,14 @@ bool Game::try_apply_move(const int from, const int to) {
             return true;
         }
     }
+    std::cout << "Halmove clock : " << _game_state.halfmove_clock << std::endl;
     return false;
 }
 
 
 EndGame Game::get_game_state() {
+
+    if (_game_state.halfmove_clock >= 75) return EndGame::STALEMATE;
 
     bool repetition = true;
     int counter = 0;

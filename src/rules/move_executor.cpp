@@ -49,9 +49,13 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
     } else {
         _game_state.en_passant_square = -1;
     }
+    if (piece_type == PieceType::PAWN || move.take) _game_state.halfmove_clock = 0;
+    else _game_state.halfmove_clock++;
     
     undo.move = move;
     undo.zobrist_hash = _zobrist.hash();
+
+    _game_state.fullmove_number++;
 
     _history.push(undo);
 }
