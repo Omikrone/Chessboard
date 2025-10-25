@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.3.0] - 2025-10-25
+
+### Added
+- Zobrist hashing for threefold repetition and draw detection.
+- Implementation of the 75-move rule for draw detection.
+
+
 ## [1.2.0] - 2025-10-18
 
 ### Added

@@ -28,7 +28,6 @@ bool Game::try_apply_move(const int from, const int to) {
             return true;
         }
     }
-    std::cout << "Halmove clock : " << _game_state.halfmove_clock << std::endl;
     return false;
 }
 
