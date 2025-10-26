@@ -7,6 +7,9 @@
 
 #include <cctype>
 #include <string>
+#include <vector>
+#include <iostream>
+#include <sstream>
 
 
 /**
@@ -22,9 +25,21 @@ class FEN
          * @brief Converts the state of a game into a FEN notation.
          *
          * @param game Game to convert.
-         * @return A string respresenting the FEN notation.
+         * @param board Board with the piece informations.
+         * @return A string representing the FEN notation.
          */
         static std::string to_string(const GameState& game, const Bitboards& board);
+
+        /**
+         * @brief Loads a FEN and creates the corresponding game state.
+         * 
+         * @param fen String representing the FEN notation of the game.
+         * @param game Game State to fill with the FEN informations.
+         * @param board Game Board to fill with the FEN informations.
+         * 
+         * @attention The fen string is considered to be valid, otherwise there may be some bugs.
+         */
+        static void load(std::string fen, GameState& game, Bitboards& board);
 
         /**
          * @brief Gets the FEN notation of a piece.
@@ -33,7 +48,16 @@ class FEN
          * @param piece_type Type of the piece.
          * @return A char representing the piece into a FEN notation.
          */
-        static char piece_symbol(const Color piece_color, const PieceType piece_type);
+        static char piece_to_symbol(const Color piece_color, const PieceType piece_type);
+
+        /**
+         * @brief Converts a symbol in FEN notation to a piece.
+         *
+         * @param piece_color Color of the piece.
+         * @param piece_type Type of the piece.
+         * @return A char representing the piece into a FEN notation.
+         */
+        static PieceType symbol_to_piece(const char piece_symbol);
 
         /**
          * @brief Gets the FEN notation of the castling rights.
@@ -41,5 +65,13 @@ class FEN
          * @param rights Binary notation of the rights (1 for right of castle, else 0).
          * @return A string representing the castling rights of both sides in the game.
          */
-        static std::string castling_rights(int rights);
+        static std::string castling_rights_to_fen(int rights);
+
+        /**
+         * @brief Gets the FEN notation of the castling rights.
+         *
+         * @param rights Binary notation of the rights (1 for right of castle, else 0).
+         * @return A string representing the castling rights of both sides in the game.
+         */
+        static int fen_to_castling_rights(const std::string castling_rights);
 };
