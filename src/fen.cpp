@@ -25,7 +25,7 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
                 }
                 PieceType piece_type = board.get_piece_type(piece_color, i);
                 if (piece_type == NONE_PIECE) continue;
-                fen.push_back(FEN::piece_symbol(piece_color, piece_type));
+                fen.push_back(FEN::piece_to_symbol(piece_color, piece_type));
             }
         }
         if (wo_piece > 0) fen.append(std::to_string(wo_piece));
@@ -35,7 +35,7 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
     if (game.side_to_move == Color::WHITE) fen.append(" w ");
     else fen.append(" b ");
 
-    fen.append(FEN::castling_rights(game.castling_rights));
+    fen.append(FEN::castling_rights_to_fen(game.castling_rights));
     fen.append(std::to_string(game.fullmove_number / 2));
     fen.push_back(' ');
     fen.append(std::to_string(game.fullmove_number / 2));
@@ -44,7 +44,42 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
 }
 
 
-char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
+void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
+
+    std::istringstream iss(fen);
+    std::vector<std::string> parts;
+    
+    std::string part;
+    iss >> part;
+
+    int counter = 0;
+    for (char c : part)
+    {
+        if (std::isdigit(c)) {
+            counter += c;
+        }
+        else if (c != '/') {
+            Color piece_color = (std::isupper(c)) ? Color::WHITE : Color::BLACK;
+            board.add_piece(piece_color, FEN::symbol_to_piece(c), counter++);
+        }
+    }
+
+    iss >> part;
+    if (part == "b") game_state.side_to_move == Color::BLACK;
+
+    iss >> part;
+    game_state.castling_rights = fen_to_castling_rights(part);
+
+    iss >> part; // TODO: handle en passant square
+
+    iss >> part;
+    game_state.fullmove_number += std::atoi(part.c_str());
+    iss >> part;
+    game_state.fullmove_number += std::atoi(part.c_str());
+}
+
+
+char FEN::piece_to_symbol(const Color piece_color, const PieceType piece_type) {
     char symbol;
     switch (piece_type)
     {
@@ -75,7 +110,29 @@ char FEN::piece_symbol(const Color piece_color, const PieceType piece_type) {
 }
 
 
-std::string FEN::castling_rights(int rights) {
+PieceType FEN::symbol_to_piece(const char piece_symbol) {
+    char symbol = std::tolower(piece_symbol);
+    switch (symbol)
+    {
+        case 'p':
+            return PieceType::PAWN;
+        case 'b':
+            return PieceType::BISHOP;
+        case 'q':
+            return PieceType::QUEEN;
+        case 'r':
+            return PieceType::ROOK;
+        case 'n':
+            return PieceType::KNIGHT;
+        case 'k':
+            return PieceType::KING;
+        default:
+            return PieceType::NONE_PIECE;
+    }
+}
+
+
+std::string FEN::castling_rights_to_fen(int rights) {
     std::string rights_str = "";
     if ((rights >> 1) & 1) rights_str.append("K");
     if ((rights >> 2) & 1) rights_str.append("Q");
@@ -83,4 +140,28 @@ std::string FEN::castling_rights(int rights) {
     if ((rights >> 4) & 1) rights_str.append("q");
     rights_str.append(" - ");
     return rights_str;
+}
+
+
+int FEN::fen_to_castling_rights(const std::string fen) {
+    int rights = 0;
+    int counter = 1;
+    
+    if (fen.at(counter) == 'K') {
+        rights |= (1 << counter);
+        counter++;
+    }
+    if (fen.at(counter) == 'Q') {
+        rights |= (1 << counter);
+        counter++;
+    }
+    if (fen.at(counter) == 'k') {
+        rights |= (1 << counter);
+        counter++;
+    }
+    if (fen.at(counter) == 'q') {
+        rights |= (1 << counter);
+        counter++;
+    }
+    return rights;
 }
