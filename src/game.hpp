@@ -74,9 +74,16 @@ class Game
         /**
          * @brief Converts the current game state into its FEN notation.
          * 
-         * @return A string represnting the current game state.
+         * @return A string representing the current game state.
          */
         std::string get_fen() const;
+
+        /**
+         * @brief Loads a position given by a FEN notation.
+         * 
+         * @param fen The FEN notation of the game to load.
+         */
+        void load_fen(std::string& fen);
 
         /**
          * @brief Generates all legal moves for a side of the chessboard.

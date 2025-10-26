@@ -82,6 +82,11 @@ std::string Game::get_fen() const {
 }
 
 
+void Game::load_fen(std::string& fen) {
+    FEN::load(fen, _game_state, _board);
+}
+
+
 std::vector<Move> Game::get_legal_moves(const Color side) {
     std::vector<Move> legal_moves;
 
