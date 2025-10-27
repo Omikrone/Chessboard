@@ -46,26 +46,38 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
 
 void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
 
+    for (size_t i = 0; i < 63; i++)
+    {
+        Color color = board.is_occupied(i);
+        if (color != Color::NONE) {
+            PieceType type = board.get_piece_type(color, i);
+            board.remove_piece(color, type, i);
+        }
+    }
+
     std::istringstream iss(fen);
     std::vector<std::string> parts;
     
     std::string part;
     iss >> part;
 
-    int counter = 0;
+    int counter = 56;
     for (char c : part)
     {
         if (std::isdigit(c)) {
-            counter += c;
+            counter += c - '0';
         }
         else if (c != '/') {
             Color piece_color = (std::isupper(c)) ? Color::WHITE : Color::BLACK;
             board.add_piece(piece_color, FEN::symbol_to_piece(c), counter++);
         }
+        else {
+            counter -= 16;
+        }
     }
 
     iss >> part;
-    if (part == "b") game_state.side_to_move == Color::BLACK;
+    if (part == "b") game_state.side_to_move = Color::BLACK;
 
     iss >> part;
     game_state.castling_rights = fen_to_castling_rights(part);
