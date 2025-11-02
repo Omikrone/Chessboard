@@ -46,6 +46,10 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
 
 void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
 
+    if (fen == "startpos") {
+        fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    }
+
     for (size_t i = 0; i < 63; i++)
     {
         Color color = board.is_occupied(i);
@@ -85,6 +89,7 @@ void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
     iss >> part; // TODO: handle en passant square
 
     iss >> part;
+    game_state.fullmove_number = 0;
     game_state.fullmove_number += std::atoi(part.c_str());
     iss >> part;
     game_state.fullmove_number += std::atoi(part.c_str());
