@@ -33,6 +33,24 @@ struct Move
         return (this->from == other.from && this->to == other.to);
     }
 
+    Move from_uci(const std::string& uci) {
+        Move move;
+        move.from = (uci[1] - '1') * 8 + (uci[0] - 'a');
+        move.to = (uci[3] - '1') * 8 + (uci[2] - 'a');
+        move.type = MoveType::NORMAL;
+        move.take = false;
+        return move;
+    }
+
+    std::string to_uci() const {
+        std::string uci;
+        uci += ('a' + (this->from % 8));
+        uci += ('1' + (this->from / 8));
+        uci += ('a' + (this->to % 8));
+        uci += ('1' + (this->to / 8));
+        return uci;
+    }
+
     void print() const {
         std::cout << "{" << std::to_string(this->from) << " : " << std::to_string(this->to) << "}" << std::endl;
     }
