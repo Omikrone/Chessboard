@@ -3,9 +3,10 @@
 #pragma once
 
 #include "bitboards.hpp"
-#include "components/move.hpp"
-#include "rules/move_generator.hpp"
-#include "rules/move_executor.hpp"
+#include "moves/move.hpp"
+#include "moves/move_generator.hpp"
+#include "moves/move_executor.hpp"
+#include "uci/fen.hpp"
 
 #include <bit>
 #include <vector>
@@ -20,7 +21,7 @@ class MoveValidator
 {
     private:
 
-        GameState& _game_state;
+        Position& _position;
         Bitboards& _board;
         MoveExecutor& _executor;
 
@@ -53,7 +54,7 @@ class MoveValidator
 
     public:
 
-        MoveValidator(GameState& position, Bitboards& board, MoveExecutor& executor);
+        MoveValidator(Position& position, Bitboards& board, MoveExecutor& executor);
 
         ~MoveValidator() = default;
 

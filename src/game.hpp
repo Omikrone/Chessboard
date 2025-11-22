@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "rules/move_generator.hpp"
+#include "moves/move_generator.hpp"
 #include "rules/move_validator.hpp"
-#include "rules/move_executor.hpp"
-#include "bitboards.hpp"
+#include "moves/move_executor.hpp"
+#include "board/bitboards.hpp"
 #include "game_constants.hpp"
-#include "fen.hpp"
-#include "zobrist.hpp"
+#include "uci/fen.hpp"
+#include "board/zobrist.hpp"
 
 #include <string>
 
@@ -23,7 +23,7 @@ class Game
     private:
       
         Bitboards _board;
-        GameState _game_state;
+        Position _position;
         MoveValidator _validator;
         MoveExecutor _executor;
         GameHistory _history;
@@ -54,7 +54,7 @@ class Game
          * 
          * @return The state of the game (checkmate, ...).
          */
-        EndGame get_game_state();
+        GameState get_game_state();
 
         /**
          * @brief Gets the the color of the current player.
@@ -69,7 +69,14 @@ class Game
          * @param side The color ot get the number of moves.
          * @return The number of moves.
          */
-        int get_nb_moves(const Color side) const;
+        int get_fullmove_number() const;
+
+        /**
+         * @brief Gets the current halfmove clock of the game.
+         * 
+         * @return The halfmove clock.
+         */
+        int get_halfmove_clock() const;
 
         /**
          * @brief Converts the current game state into its FEN notation.

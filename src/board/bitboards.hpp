@@ -5,10 +5,13 @@
 #include "game_constants.hpp"
 
 #include <cstdint>
+#include <iostream>
+#include <bitset>
 
-
-// TODO: define an intern type Bitboard
-struct GameState
+/**
+ * @brief Represents the state of a chess game.
+ */
+struct Position
 {
     uint64_t pieces[2][6];
     uint64_t colors[2];
@@ -32,7 +35,7 @@ class Bitboards
 {
     private:
 
-        GameState& _game_state;
+        Position& _position;
 
         /**
          * @brief Updates a side bitboard based on its piece bitboards.
@@ -49,7 +52,7 @@ class Bitboards
 
     public:
 
-        Bitboards(GameState& game_state);
+        Bitboards(Position& game_state);
 
         ~Bitboards() = default;
         

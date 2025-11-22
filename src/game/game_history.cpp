@@ -16,8 +16,8 @@ GameHistory::GameHistory() {
     push(undo);
 }
 
-void GameHistory::push(UndoMove game_state) {
-    _history.push_back(game_state);
+void GameHistory::push(UndoMove undo) {
+    _history.push_back(undo);
 }
 
 UndoMove GameHistory::pop() {

@@ -3,7 +3,7 @@
 #include "fen.hpp"
 
 
-std::string FEN::to_string(const GameState& game, const Bitboards& board) {
+std::string FEN::to_string(const Position& position, const Bitboards& board) {
     std::string fen;
     
     // Iterates the gameboard's squares and  convert each piece to it's FEN notation
@@ -32,30 +32,30 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
         if (rank > 0) fen.push_back('/');  
     }
 
-    if (game.side_to_move == Color::WHITE) fen.append(" w ");
+    if (position.side_to_move == Color::WHITE) fen.append(" w ");
     else fen.append(" b ");
 
-    fen.append(FEN::castling_rights_to_fen(game.castling_rights));
+    fen.append(FEN::castling_rights_to_fen(position.castling_rights));
 
     fen.push_back(' ');
-    if (game.en_passant_square == -1) fen.push_back('-');
+    if (position.en_passant_square == -1) fen.push_back('-');
     else {
-        int file = game.en_passant_square % 8;
-        int rank = game.en_passant_square / 8;
+        int file = position.en_passant_square % 8;
+        int rank = position.en_passant_square / 8;
         fen.push_back('a' + file);
         fen.push_back('1' + rank);
     }
 
     fen.push_back(' ');
-    fen.append(std::to_string(game.halfmove_clock));
+    fen.append(std::to_string(position.halfmove_clock));
     fen.push_back(' ');
-    fen.append(std::to_string(game.fullmove_number));
+    fen.append(std::to_string(position.fullmove_number));
 
     return fen;
 }
 
 
-void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
+void FEN::load(std::string fen, Position& position, Bitboards& board) {
 
     if (fen == "startpos") {
         fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -84,24 +84,24 @@ void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
     }
 
     iss >> part;
-    if (part == "b") game_state.side_to_move = Color::BLACK;
-    else game_state.side_to_move = Color::WHITE;
+    if (part == "b") position.side_to_move = Color::BLACK;
+    else position.side_to_move = Color::WHITE;
 
     iss >> part;
-    game_state.castling_rights = fen_to_castling_rights(part);
+    position.castling_rights = fen_to_castling_rights(part);
 
     iss >> part;
-    if (part == "-") game_state.en_passant_square = -1;
+    if (part == "-") position.en_passant_square = -1;
     else {
         int file = part[0] - 'a';
         int rank = part[1] - '1';
-        game_state.en_passant_square = rank * 8 + file;
+        position.en_passant_square = rank * 8 + file;
     }
 
     iss >> part;
-    game_state.halfmove_clock = std::atoi(part.c_str());
+    position.halfmove_clock = std::atoi(part.c_str());
     iss >> part;
-    game_state.fullmove_number = std::atoi(part.c_str());
+    position.fullmove_number = std::atoi(part.c_str());
 }
 
 

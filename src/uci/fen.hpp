@@ -28,7 +28,7 @@ class FEN
          * @param board Board with the piece informations.
          * @return A string representing the FEN notation.
          */
-        static std::string to_string(const GameState& game, const Bitboards& board);
+        static std::string to_string(const Position& game, const Bitboards& board);
 
         /**
          * @brief Loads a FEN and creates the corresponding game state.
@@ -39,7 +39,7 @@ class FEN
          * 
          * @attention The fen string is considered to be valid, otherwise there may be some bugs.
          */
-        static void load(std::string fen, GameState& game, Bitboards& board);
+        static void load(std::string fen, Position& game, Bitboards& board);
 
         /**
          * @brief Gets the FEN notation of a piece.

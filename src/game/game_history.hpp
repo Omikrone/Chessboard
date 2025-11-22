@@ -3,7 +3,7 @@
 #pragma once
 
 #include "bitboards.hpp"
-#include "components/move.hpp"
+#include "moves/move.hpp"
 
 #include <vector>
 #include <cassert>
@@ -29,9 +29,9 @@ class GameHistory {
         /**
          * @brief Adds a new game state to the history.
          *
-         * @param game_state The current state of the game.
+         * @param undo The undo information for the move.
          */
-        void push(UndoMove game_state);
+        void push(UndoMove undo);
 
         /**
          * @brief Removes the last game state played from the history.

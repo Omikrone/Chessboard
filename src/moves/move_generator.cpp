@@ -1,9 +1,9 @@
 // move_generator.cpp
 
-#include "rules/move_generator.hpp"
+#include "moves/move_generator.hpp"
 
 
-std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const GameState& game_state, const Bitboards& board) {
+std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Position& game_state, const Bitboards& board) {
     std::vector<Move> moves;
     int64_t mask;
     for (int i = 0; i < 64; i++)
@@ -22,7 +22,7 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Game
 }
 
 
-std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType& piece_type, const GameState& game_state) {
+std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType& piece_type, const Position& game_state) {
     std::vector<Move> moves;
 
     Color opponent_side = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
@@ -55,7 +55,7 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
 
 std::vector<Move> MoveGenerator::pawn_moves(
     const int square,
-    const GameState& game_state,
+    const Position& game_state,
     const Color side,
     const uint64_t empty_squares,
     const uint64_t opponent_side)

@@ -3,8 +3,8 @@
 #include "zobrist.hpp"
 
 
-Zobrist::Zobrist(GameState& game_state, Bitboards& board):
-    _game_state(game_state),
+Zobrist::Zobrist(Position& position, Bitboards& board):
+    _position(position),
     _board(board)
 {
     std::mt19937_64 rng(std::time(nullptr));
@@ -22,7 +22,7 @@ Zobrist::Zobrist(GameState& game_state, Bitboards& board):
 const uint64_t Zobrist::hash() {
     uint64_t hash = 0;
 
-    if (_game_state.side_to_move == Color::BLACK) hash ^= _turn;
+    if (_position.side_to_move == Color::BLACK) hash ^= _turn;
     for (int i = 0; i < 64; i++)
     {
         Color side = _board.is_occupied(i);

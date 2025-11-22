@@ -4,10 +4,14 @@
 
 #define BOARD_LENGTH 8
 
-enum class EndGame {
+enum class GameState {
     CONTINUING,
     CHECKMATE,
-    STALEMATE
+    STALEMATE,
+    DRAW_BY_INSUFFICIENT_MATERIAL,
+    DRAW_BY_FIFTY_MOVE_RULE,
+    DRAW_BY_75_MOVE_RULE,
+    DRAW_BY_THREEFOLD_REPETITION
 };
 
 enum Color {

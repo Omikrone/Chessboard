@@ -1,16 +1,15 @@
 //move_validator.cpp
 
 #include "rules/move_validator.hpp"
-#include <iostream>
-#include "fen.hpp"
 
 
-MoveValidator::MoveValidator(GameState& game_state, Bitboards& board, MoveExecutor& executor) 
-: _game_state(game_state), _board(board), _executor(executor) {}
+
+MoveValidator::MoveValidator(Position& game_state, Bitboards& board, MoveExecutor& executor) 
+: _position(game_state), _board(board), _executor(executor) {}
 
 
 bool MoveValidator::is_square_attacked(const int square, const Color opponent) const {
-    std::vector<Move> enemy_moves = MoveGenerator::all_possible_moves(opponent, _game_state, _board);
+    std::vector<Move> enemy_moves = MoveGenerator::all_possible_moves(opponent, _position, _board);
     for (Move& m: enemy_moves) {
         if (m.to == square) return true;
     }
@@ -21,7 +20,7 @@ bool MoveValidator::is_square_attacked(const int square, const Color opponent) c
 int MoveValidator::find_king(const Color king_color) const {
     int square = -1;
     for (int i = 0; i < 64; i++) {
-        if (_game_state.pieces[king_color][PieceType::KING] & (1ULL << i)) {
+        if (_position.pieces[king_color][PieceType::KING] & (1ULL << i)) {
             square = i;
             break;
         }
@@ -42,11 +41,11 @@ bool MoveValidator::is_legal(const Move& move) {
     bool result;
 
     if (move.type == MoveType::CASTLE_KINGSIDE || move.type==MoveType::CASTLE_QUEENSIDE) {
-        return check_castle(move, _game_state.side_to_move);
+        return check_castle(move, _position.side_to_move);
     }
 
-    _executor.make_move(_game_state.side_to_move, move);
-    result = !is_king_in_check(_game_state.side_to_move);
+    _executor.make_move(_position.side_to_move, move);
+    result = !is_king_in_check(_position.side_to_move);
     _executor.unmake_last_move();
     return result;
 }

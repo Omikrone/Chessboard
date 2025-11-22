@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "bitboards.hpp"
-#include "components/move.hpp"
-#include "game_history.hpp"
-#include "zobrist.hpp"
+#include "board/bitboards.hpp"
+#include "board/zobrist.hpp"
+#include "moves/move.hpp"
+#include "game/game_history.hpp"
+
 
 
 /**
@@ -18,7 +19,7 @@ class MoveExecutor
     private:
 
         GameHistory& _history;
-        GameState& _game_state;
+        Position& _position;
         Bitboards& _board;
         Zobrist& _zobrist;
 
@@ -94,7 +95,7 @@ class MoveExecutor
 
     public:
 
-        MoveExecutor(GameHistory& history, GameState& state, Bitboards& board, Zobrist& zobrist);
+        MoveExecutor(GameHistory& history, Position& state, Bitboards& board, Zobrist& zobrist);
 
         ~MoveExecutor() = default;
 

@@ -4,9 +4,9 @@
 #include <iostream>
 
 
-MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& board, Zobrist& zobrist):
+MoveExecutor::MoveExecutor(GameHistory& history, Position& state, Bitboards& board, Zobrist& zobrist):
     _history(history),
-    _game_state(state),
+    _position(state),
     _board(board),
     _zobrist(zobrist)
     {}
@@ -14,11 +14,11 @@ MoveExecutor::MoveExecutor(GameHistory& history, GameState& state, Bitboards& bo
 
 void MoveExecutor::make_move(const Color side, const Move& move) {
     UndoMove undo;
-    undo.castling_rights = _game_state.castling_rights;
-    undo.fullmove_number = _game_state.fullmove_number;
-    undo.en_passant_square = _game_state.en_passant_square;
-    undo.halfmove_clock = _game_state.halfmove_clock;
-    undo.side_to_move = _game_state.side_to_move;
+    undo.castling_rights = _position.castling_rights;
+    undo.fullmove_number = _position.fullmove_number;
+    undo.en_passant_square = _position.en_passant_square;
+    undo.halfmove_clock = _position.halfmove_clock;
+    undo.side_to_move = _position.side_to_move;
 
     switch (move.type)
     {
@@ -42,20 +42,20 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
     PieceType piece_type = _board.get_piece_type(side, move.to);
     if (piece_type == PieceType::PAWN) {
         if (std::abs(move.from - move.to) == 16) {
-            _game_state.en_passant_square = (move.from + move.to) / 2;
+            _position.en_passant_square = (move.from + move.to) / 2;
         } else {
-            _game_state.en_passant_square = -1;
+            _position.en_passant_square = -1;
         }
     } else {
-        _game_state.en_passant_square = -1;
+        _position.en_passant_square = -1;
     }
-    if (piece_type == PieceType::PAWN || move.take) _game_state.halfmove_clock = 0;
-    else _game_state.halfmove_clock++;
+    if (piece_type == PieceType::PAWN || move.take) _position.halfmove_clock = 0;
+    else _position.halfmove_clock++;
     
     undo.move = move;
     undo.zobrist_hash = _zobrist.hash();
 
-    _game_state.fullmove_number++;
+    _position.fullmove_number++;
 
     _history.push(undo);
 }
@@ -84,12 +84,12 @@ void MoveExecutor::unmake_last_move() {
             undo_normal(undo.side_to_move, undo.move, undo.taken_piece);
             break;
     }
-    _game_state.castling_rights = undo.castling_rights;
-    _game_state.en_passant_square = undo.en_passant_square;
-    _game_state.fullmove_number = undo.fullmove_number;
-    _game_state.halfmove_clock = undo.halfmove_clock;
-    _game_state.side_to_move = undo.side_to_move;
-    _game_state.zobrist_hash = undo.zobrist_hash;
+    _position.castling_rights = undo.castling_rights;
+    _position.en_passant_square = undo.en_passant_square;
+    _position.fullmove_number = undo.fullmove_number;
+    _position.halfmove_clock = undo.halfmove_clock;
+    _position.side_to_move = undo.side_to_move;
+    _position.zobrist_hash = undo.zobrist_hash;
 }
 
 
@@ -105,10 +105,10 @@ void MoveExecutor::normal(UndoMove& undo, const Color side, const Move& move) {
     PieceType piece_type = _board.get_piece_type(side, move.from);
     _board.move_piece(side, piece_type, move.from, move.to);
     if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 7 || move.from == 63))) {
-        _game_state.castling_rights &= ~(1 << (side * 2 + 1));
+        _position.castling_rights &= ~(1 << (side * 2 + 1));
     }
     if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 0 || move.from == 56))) {
-        _game_state.castling_rights &= ~(1 << (side * 2 + 2));
+        _position.castling_rights &= ~(1 << (side * 2 + 2));
     }
 }
 
@@ -126,7 +126,7 @@ void MoveExecutor::undo_normal(const Color side, const Move& move, PieceType tak
 void MoveExecutor::castle_kingside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from + 3, move.from + 1);
-    _game_state.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
+    _position.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
 }
 
 void MoveExecutor::undo_castle_kingside(const Color side, const Move& move) {
@@ -138,7 +138,7 @@ void MoveExecutor::undo_castle_kingside(const Color side, const Move& move) {
 void MoveExecutor::castle_queenside(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::KING, move.from, move.to);
     _board.move_piece(side, PieceType::ROOK, move.from - 4, move.from - 1);
-    _game_state.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
+    _position.castling_rights &= ~((1 << (side*2)) | (1 << (side*2 + 1)));
 }
 
 void MoveExecutor::undo_castle_queenside(const Color side, const Move& move) {
