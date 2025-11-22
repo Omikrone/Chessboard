@@ -33,7 +33,7 @@ struct Move
         return (this->from == other.from && this->to == other.to);
     }
 
-    Move from_uci(const std::string& uci) {
+    static Move from_uci(const std::string& uci) {
         Move move;
         move.from = (uci[1] - '1') * 8 + (uci[0] - 'a');
         move.to = (uci[3] - '1') * 8 + (uci[2] - 'a');

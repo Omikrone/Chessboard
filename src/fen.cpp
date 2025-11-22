@@ -36,9 +36,20 @@ std::string FEN::to_string(const GameState& game, const Bitboards& board) {
     else fen.append(" b ");
 
     fen.append(FEN::castling_rights_to_fen(game.castling_rights));
-    fen.append(std::to_string(game.fullmove_number / 2));
+
     fen.push_back(' ');
-    fen.append(std::to_string(game.fullmove_number / 2));
+    if (game.en_passant_square == -1) fen.push_back('-');
+    else {
+        int file = game.en_passant_square % 8;
+        int rank = game.en_passant_square / 8;
+        fen.push_back('a' + file);
+        fen.push_back('1' + rank);
+    }
+
+    fen.push_back(' ');
+    fen.append(std::to_string(game.halfmove_clock));
+    fen.push_back(' ');
+    fen.append(std::to_string(game.fullmove_number));
 
     return fen;
 }
@@ -50,14 +61,7 @@ void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
         fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     }
 
-    for (size_t i = 0; i < 63; i++)
-    {
-        Color color = board.is_occupied(i);
-        if (color != Color::NONE) {
-            PieceType type = board.get_piece_type(color, i);
-            board.remove_piece(color, type, i);
-        }
-    }
+    board.clear();
 
     std::istringstream iss(fen);
     std::vector<std::string> parts;
@@ -65,34 +69,39 @@ void FEN::load(std::string fen, GameState& game_state, Bitboards& board) {
     std::string part;
     iss >> part;
 
-    int counter = 56;
-    for (char c : part)
-    {
-        if (std::isdigit(c)) {
-            counter += c - '0';
-        }
-        else if (c != '/') {
-            Color piece_color = (std::isupper(c)) ? Color::WHITE : Color::BLACK;
-            board.add_piece(piece_color, FEN::symbol_to_piece(c), counter++);
-        }
-        else {
-            counter -= 16;
+    int square = 56;
+    for (char c : part) {
+        if (isdigit(c)) {
+            square += c - '0';
+        } else if (c == '/') {
+            square -= 16;
+        } else {
+            Color color = isupper(c) ? WHITE : BLACK;
+            PieceType type = symbol_to_piece(c);
+            board.add_piece(color, type, square);
+            square++;
         }
     }
 
     iss >> part;
     if (part == "b") game_state.side_to_move = Color::BLACK;
+    else game_state.side_to_move = Color::WHITE;
 
     iss >> part;
     game_state.castling_rights = fen_to_castling_rights(part);
 
-    iss >> part; // TODO: handle en passant square
+    iss >> part;
+    if (part == "-") game_state.en_passant_square = -1;
+    else {
+        int file = part[0] - 'a';
+        int rank = part[1] - '1';
+        game_state.en_passant_square = rank * 8 + file;
+    }
 
     iss >> part;
-    game_state.fullmove_number = 0;
-    game_state.fullmove_number += std::atoi(part.c_str());
+    game_state.halfmove_clock = std::atoi(part.c_str());
     iss >> part;
-    game_state.fullmove_number += std::atoi(part.c_str());
+    game_state.fullmove_number = std::atoi(part.c_str());
 }
 
 
@@ -150,35 +159,29 @@ PieceType FEN::symbol_to_piece(const char piece_symbol) {
 
 
 std::string FEN::castling_rights_to_fen(int rights) {
-    std::string rights_str = "";
-    if ((rights >> 1) & 1) rights_str.append("K");
-    if ((rights >> 2) & 1) rights_str.append("Q");
-    if ((rights >> 3) & 1) rights_str.append("k");
-    if ((rights >> 4) & 1) rights_str.append("q");
-    rights_str.append(" - ");
+    std::string rights_str;
+    if ((rights >> 0) & 1) rights_str.append("K");
+    if ((rights >> 1) & 1) rights_str.append("Q");
+    if ((rights >> 2) & 1) rights_str.append("k");
+    if ((rights >> 3) & 1) rights_str.append("q");
+    if (rights_str.empty()) rights_str.append("-");
     return rights_str;
 }
 
 
-int FEN::fen_to_castling_rights(const std::string fen) {
+int FEN::fen_to_castling_rights(const std::string& fen) {
     int rights = 0;
-    int counter = 1;
-    
-    if (fen.at(counter) == 'K') {
-        rights |= (1 << counter);
-        counter++;
+
+    for (char c : fen) {
+        switch (c) {
+            case 'K': rights |= (1 << 0); break;
+            case 'Q': rights |= (1 << 1); break;
+            case 'k': rights |= (1 << 2); break;
+            case 'q': rights |= (1 << 3); break;
+            case '-': break;
+            default: break;
+        }
     }
-    if (fen.at(counter) == 'Q') {
-        rights |= (1 << counter);
-        counter++;
-    }
-    if (fen.at(counter) == 'k') {
-        rights |= (1 << counter);
-        counter++;
-    }
-    if (fen.at(counter) == 'q') {
-        rights |= (1 << counter);
-        counter++;
-    }
+
     return rights;
 }

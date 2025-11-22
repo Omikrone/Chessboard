@@ -82,6 +82,12 @@ class Bitboards
         void move_piece(const Color side, const PieceType piece_type, const int from, const int to);
 
         /**
+         * @brief Clears all the bitboards.
+         *
+         */
+        void clear();
+
+        /**
          * @brief Checks if a square is occupied by a piece.
          *
          * @param at Position to check.

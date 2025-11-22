@@ -59,6 +59,17 @@ void Bitboards::remove_piece(const Color side, const PieceType piece_type, const
 }
 
 
+void Bitboards::clear() {
+    for (int side = 0; side < 2; side++) {
+        for (int piece = 0; piece < 6; piece++) {
+            _game_state.pieces[side][piece] = 0ULL;
+        }
+        _game_state.colors[side] = 0ULL;
+    }
+    _game_state.all_pieces = 0ULL;
+}
+
+
 void Bitboards::move_piece(const Color side, const PieceType piece_type, const int from, const int to) {
     _game_state.pieces[side][piece_type] &= ~(1ULL << from);
     _game_state.pieces[side][piece_type] |= (1ULL << to);

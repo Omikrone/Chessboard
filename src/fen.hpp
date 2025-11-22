@@ -73,5 +73,5 @@ class FEN
          * @param rights Binary notation of the rights (1 for right of castle, else 0).
          * @return A string representing the castling rights of both sides in the game.
          */
-        static int fen_to_castling_rights(const std::string castling_rights);
+        static int fen_to_castling_rights(const std::string& fen);
 };
