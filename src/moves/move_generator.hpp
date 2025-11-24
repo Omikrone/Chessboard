@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "game_constants.hpp"
+#include "game/game_constants.hpp"
 #include "moves/move.hpp"
-#include "bitboards.hpp"
+#include "board/bitboards.hpp"
 
 #include <cstdint>
 #include <vector>

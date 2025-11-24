@@ -6,7 +6,7 @@
 #include "rules/move_validator.hpp"
 #include "moves/move_executor.hpp"
 #include "board/bitboards.hpp"
-#include "game_constants.hpp"
+#include "game/game_constants.hpp"
 #include "uci/fen.hpp"
 #include "board/zobrist.hpp"
 

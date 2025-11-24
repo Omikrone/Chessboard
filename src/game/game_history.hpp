@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "bitboards.hpp"
+#include "board/bitboards.hpp"
 #include "moves/move.hpp"
 
 #include <vector>

@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "bitboards.hpp"
-#include "game_constants.hpp"
+#include "board/bitboards.hpp"
+#include "game/game_constants.hpp"
 
 #include <cctype>
 #include <string>
