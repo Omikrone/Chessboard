@@ -92,6 +92,7 @@ const PieceType Bitboards::get_piece_type(const Color side, const int at) const 
     return PieceType::NONE_PIECE;
 }
 
+
 void Bitboards::print_board(uint64_t bb) const {
     for (int rank = 7; rank >= 0; rank--) {
         for (int file = 0; file < 8; file++) {

@@ -42,3 +42,11 @@ size_t GameHistory::size() const {
 UndoMove GameHistory::at(int index) const {
     return _history.at(index);
 }
+
+std::vector<Move> GameHistory::get_moves() const {
+    std::vector<Move> moves;
+    for (size_t i = 1; i < _history.size(); i++) {
+        moves.push_back(_history[i].move);
+    }
+    return moves;
+}

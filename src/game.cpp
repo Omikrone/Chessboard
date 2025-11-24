@@ -48,7 +48,7 @@ GameState Game::get_game_state() {
         }
     }
 
-    if (counter >= 3) return GameState::STALEMATE;
+    if (counter >= 3) return GameState::DRAW_BY_THREEFOLD_REPETITION;
 
     // If the current player has at least one possible moves, the game isn't finished
     std::vector<Move> possible_moves = get_legal_moves(_position.side_to_move);

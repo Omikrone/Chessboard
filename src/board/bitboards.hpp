@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "game_constants.hpp"
+#include "game/game_constants.hpp"
 
 #include <cstdint>
 #include <iostream>
