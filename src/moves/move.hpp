@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "game/game_constants.hpp"
+
 #include <cstdint>
 #include <iostream>
 #include <string>
