@@ -103,6 +103,9 @@ std::vector<Move> Game::get_legal_moves(const Color side) {
     return legal_moves;
 }
 
+std::vector<Move> Game::get_played_moves() const {
+    return _history.get_moves();
+}
 
 Bitboards& Game::get_board() {
     return _board;

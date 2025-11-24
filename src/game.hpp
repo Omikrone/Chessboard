@@ -107,6 +107,13 @@ class Game
         Bitboards& get_board();
 
         /**
+         * @brief Gets the list of moves played in the game.
+         * 
+         * @return A vector of the moves played.
+         */
+        std::vector<Move> get_played_moves() const;
+
+        /**
          * @brief Cancels the last move made on the board and restores the previous state.
          * 
          */
