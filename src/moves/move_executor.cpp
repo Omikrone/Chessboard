@@ -32,7 +32,8 @@ void MoveExecutor::make_move(const Color side, const Move& move, const std::opti
             break;
         case MoveType::PROMOTION:
             normal(undo, side, move);
-            promotion(side, move.to, promotion_piece.value());
+            if (promotion_piece.has_value()) promotion(side, move.to, promotion_piece.value());
+            else promotion(side, move.to, PieceType::QUEEN);
             break;
         default:
             normal(undo, side, move);
@@ -171,6 +172,7 @@ void MoveExecutor::promotion(const Color side, const int square, const PieceType
 }
 
 void MoveExecutor::undo_promotion(const Color side, const Move& move) {
-    _board.remove_piece(side, PieceType::QUEEN, move.to);
+    PieceType promoted_piece = _board.get_piece_type(side, move.to);
+    _board.remove_piece(side, promoted_piece, move.to);
     _board.add_piece(side, PieceType::PAWN, move.to);
 }
