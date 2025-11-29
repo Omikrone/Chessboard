@@ -22,7 +22,7 @@ bool Game::try_apply_move(const int from, const int to, const std::optional<Piec
     std::vector<Move> moves = MoveGenerator::piece_moves(from, _position.side_to_move, piece_type, _position);
     for (Move m: moves) {
         if (m.from == from && m.to == to && _validator.is_legal(m)) {
-            _executor.make_move(_position.side_to_move, m);
+            _executor.make_move(_position.side_to_move, m, promotion_piece);
             return true;
         }
     }
