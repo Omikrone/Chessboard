@@ -10,6 +10,7 @@
 #include "uci/fen.hpp"
 #include "board/zobrist.hpp"
 
+#include <optional>
 #include <string>
 
 
@@ -41,7 +42,7 @@ class Game
          * @param move Move to apply.
          * @return true if the move is legal, else false.
          */
-        bool try_apply_move(const int from, const int to);
+        bool try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece = std::nullopt);
 
         /**
          * @brief Switch the current turn.

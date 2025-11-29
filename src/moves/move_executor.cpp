@@ -1,7 +1,6 @@
 // move_executor.hpp
 
 #include "move_executor.hpp"
-#include <iostream>
 
 
 MoveExecutor::MoveExecutor(GameHistory& history, Position& state, Bitboards& board, Zobrist& zobrist):
@@ -12,7 +11,7 @@ MoveExecutor::MoveExecutor(GameHistory& history, Position& state, Bitboards& boa
     {}
 
 
-void MoveExecutor::make_move(const Color side, const Move& move) {
+void MoveExecutor::make_move(const Color side, const Move& move, const std::optional<PieceType> promotion_piece) {
     UndoMove undo;
     undo.castling_rights = _position.castling_rights;
     undo.fullmove_number = _position.fullmove_number;
@@ -33,7 +32,7 @@ void MoveExecutor::make_move(const Color side, const Move& move) {
             break;
         case MoveType::PROMOTION:
             normal(undo, side, move);
-            promotion(side, move.to, PieceType::QUEEN);
+            promotion(side, move.to, promotion_piece.value());
             break;
         default:
             normal(undo, side, move);

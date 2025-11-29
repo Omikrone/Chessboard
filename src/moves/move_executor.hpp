@@ -7,6 +7,7 @@
 #include "moves/move.hpp"
 #include "game/game_history.hpp"
 
+#include <optional>
 
 
 /**
@@ -105,7 +106,7 @@ class MoveExecutor
          * @param side Player which wants to apply the move.
          * @param move The move to apply.
          */
-        void make_move(const Color side, const Move& move);
+        void make_move(const Color side, const Move& move, const std::optional<PieceType> promotion_piece = std::nullopt);
 
         /**
          * @brief Cancels the last move made and restores the previous game state before.

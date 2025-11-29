@@ -12,7 +12,7 @@ Game::Game()
 {}
 
 
-bool Game::try_apply_move(const int from, const int to) {
+bool Game::try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece) {
 
     Color piece_color = _board.is_occupied(from);
     if (piece_color != _position.side_to_move) return false; // The player can't play a piece from the other side
