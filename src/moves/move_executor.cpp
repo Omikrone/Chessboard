@@ -105,10 +105,10 @@ void MoveExecutor::normal(UndoMove& undo, const Color side, const Move& move) {
     PieceType piece_type = _board.get_piece_type(side, move.from);
     _board.move_piece(side, piece_type, move.from, move.to);
     if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 7 || move.from == 63))) {
-        _position.castling_rights &= ~(1 << (side * 2 + 1));
+        _position.castling_rights &= ~(1 << (side * 2));
     }
     if (piece_type == PieceType::KING || (piece_type == PieceType::ROOK && (move.from == 0 || move.from == 56))) {
-        _position.castling_rights &= ~(1 << (side * 2 + 2));
+        _position.castling_rights &= ~(1 << (side * 2 + 1));
     }
 }
 
