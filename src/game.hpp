@@ -98,7 +98,7 @@ class Game
          * 
          * @return A vector of the moves.
          */
-        std::vector<Move> get_legal_moves(const Color side);
+        std::vector<Move> get_legal_moves();
 
         /**
          * @brief Gets the board of the game.

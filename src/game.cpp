@@ -37,7 +37,7 @@ GameState Game::get_game_state() {
 
     bool repetition = true;
     int counter = 0;
-    for (int i = 1; i <= _history.size(); i++)
+    for (size_t i = 1; i <= _history.size(); i++)
     {
         if (_history.size() < 6) {
             repetition = false;
@@ -51,7 +51,7 @@ GameState Game::get_game_state() {
     if (counter >= 3) return GameState::DRAW_BY_THREEFOLD_REPETITION;
 
     // If the current player has at least one possible moves, the game isn't finished
-    std::vector<Move> possible_moves = get_legal_moves(_position.side_to_move);
+    std::vector<Move> possible_moves = get_legal_moves();
     if (!possible_moves.empty()) return GameState::CONTINUING;
 
     // If the king is in check, it's checkmate, else it's stalemate
@@ -90,7 +90,7 @@ void Game::load_fen(std::string& fen) {
 }
 
 
-std::vector<Move> Game::get_legal_moves(const Color side) {
+std::vector<Move> Game::get_legal_moves() {
     std::vector<Move> legal_moves;
 
     std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_position.side_to_move, _position, _board);

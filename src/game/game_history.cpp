@@ -39,7 +39,7 @@ size_t GameHistory::size() const {
     return _history.size();
 }
 
-UndoMove GameHistory::at(int index) const {
+UndoMove GameHistory::at(size_t index) const {
     return _history.at(index);
 }
 

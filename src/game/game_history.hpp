@@ -60,7 +60,7 @@ class GameHistory {
          */
         size_t size() const;
 
-        UndoMove at(int index) const;
+        UndoMove at(size_t index) const;
 
         std::vector<Move> get_moves() const;
 };

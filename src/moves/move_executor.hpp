@@ -67,7 +67,7 @@ class MoveExecutor
          * @param side Player which wants to apply the move.
          * @param move Move to apply.
          */
-        void en_passant(UndoMove& undo, const Color side, const Move& move);
+        void en_passant(const Color side, const Move& move);
 
         /**
          * @brief Cancels an en passant move on the board.

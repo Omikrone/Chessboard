@@ -47,9 +47,9 @@ struct Move
     std::string to_uci() const {
         std::string uci;
         uci += ('a' + (this->from % 8));
-        uci += ('1' + (this->from / 8));
+        uci += ('1' + (char)(this->from / 8));
         uci += ('a' + (this->to % 8));
-        uci += ('1' + (this->to / 8));
+        uci += ('1' + (char)(this->to / 8));
         return uci;
     }
 

@@ -28,7 +28,7 @@ void MoveExecutor::make_move(const Color side, const Move& move, const std::opti
             castle_queenside(side, move);
             break;
         case MoveType::EN_PASSANT:
-            en_passant(undo, side, move);
+            en_passant(side, move);
             break;
         case MoveType::PROMOTION:
             normal(undo, side, move);
@@ -147,7 +147,7 @@ void MoveExecutor::undo_castle_queenside(const Color side, const Move& move) {
 }
 
 
-void MoveExecutor::en_passant(UndoMove& undo, const Color side, const Move& move) {
+void MoveExecutor::en_passant(const Color side, const Move& move) {
     _board.move_piece(side, PieceType::PAWN, move.from, move.to);
     Color opponent_color = (side == Color::WHITE ? Color::BLACK : Color::WHITE);
     int en_passant_square = move.to;
