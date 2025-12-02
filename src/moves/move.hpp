@@ -59,6 +59,9 @@ struct Move
 };
 
 
+/**
+ * @brief Represents the information needed to undo a move.
+ */
 struct UndoMove
 {
     Move move;

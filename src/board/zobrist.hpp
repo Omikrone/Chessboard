@@ -6,6 +6,11 @@
 #include <random>
 #include <ctime>
 
+/**
+ * @brief Class representing the Zobrist hashing of a chess position.
+ *
+ * Manages the generation and calculation of the Zobrist hash for a given position.
+ */
 class Zobrist
 {
     private:
@@ -17,5 +22,11 @@ class Zobrist
     public:
         Zobrist(Position& game_state, Bitboards& board);
         ~Zobrist() = default;
+
+        /**
+         * @brief Calculates the Zobrist hash for the current position.
+         *
+         * @return The Zobrist hash as a 64-bit unsigned integer.
+         */
         const uint64_t hash();
 };

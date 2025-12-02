@@ -4,6 +4,9 @@
 
 #define BOARD_LENGTH 8
 
+/**
+ * @brief Represents the differents game states.
+ */
 enum class GameState {
     CONTINUING,
     CHECKMATE,
@@ -14,12 +17,18 @@ enum class GameState {
     DRAW_BY_THREEFOLD_REPETITION
 };
 
+/**
+ * @brief Represents the colors of the pieces and players.
+ */
 enum Color {
     WHITE = 0,
     BLACK = 1,
     NONE = 2
 };
 
+/**
+ * @brief Represents the differents piece types.
+ */
 enum PieceType {
     PAWN = 0,
     KNIGHT = 1,

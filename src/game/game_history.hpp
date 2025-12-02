@@ -60,7 +60,18 @@ class GameHistory {
          */
         size_t size() const;
 
+        /**
+         * @brief Gets the move at a given index in the history.
+         *
+         * @param index The index to get the move from.
+         * @return The move at the given index.
+         */
         UndoMove at(size_t index) const;
 
+        /**
+         * @brief Gets all the moves played in the game.
+         *
+         * @return A vector containing all the moves played.
+         */
         std::vector<Move> get_moves() const;
 };
