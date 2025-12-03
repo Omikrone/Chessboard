@@ -28,5 +28,5 @@ class Zobrist
          *
          * @return The Zobrist hash as a 64-bit unsigned integer.
          */
-        const uint64_t hash();
+        uint64_t hash();
 };

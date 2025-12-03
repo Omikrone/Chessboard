@@ -96,7 +96,7 @@ class Bitboards
          * @param at Position to check.
          * @return The color of the piece that occupies the square.
          */
-        const Color is_occupied(const int at) const;
+        Color is_occupied(const int at) const;
 
         /**
          * @brief Gets the type of the piece at a given position.
@@ -105,7 +105,7 @@ class Bitboards
          * @param at The position to check.
          * @return The type of the piece that occupies the square.
          */
-        const PieceType get_piece_type(const Color side, const int at) const;
+        PieceType get_piece_type(const Color side, const int at) const;
 
         /**
          * @brief Prints a bitboard for debugging.

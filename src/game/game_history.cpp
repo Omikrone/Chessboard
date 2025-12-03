@@ -4,7 +4,7 @@
 
 
 GameHistory::GameHistory() {
-    Move first_move = {0, 0};
+    Move first_move = {0, 0, MoveType::NORMAL, false};
     UndoMove undo = {
         first_move,
         Color::WHITE,

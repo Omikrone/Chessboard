@@ -23,12 +23,12 @@ class Game
 {
     private:
       
-        Bitboards _board;
         Position _position;
-        MoveValidator _validator;
-        MoveExecutor _executor;
+        Bitboards _board;
         GameHistory _history;
         Zobrist _zobrist;
+        MoveExecutor _executor;
+        MoveValidator _validator;
 
     public:
 

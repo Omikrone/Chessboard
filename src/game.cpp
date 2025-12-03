@@ -35,12 +35,10 @@ GameState Game::get_game_state() {
     if (_position.halfmove_clock >= 50) return GameState::DRAW_BY_FIFTY_MOVE_RULE;
     if (_position.halfmove_clock >= 75) return GameState::DRAW_BY_75_MOVE_RULE;
 
-    bool repetition = true;
     int counter = 0;
     for (size_t i = 1; i <= _history.size(); i++)
     {
         if (_history.size() < 6) {
-            repetition = false;
             break;
         }
         if (_history.at(_history.size() - i).zobrist_hash == _position.zobrist_hash) {

@@ -19,7 +19,7 @@ Zobrist::Zobrist(Position& position, Bitboards& board):
     _turn = dist(rng);
 }
 
-const uint64_t Zobrist::hash() {
+uint64_t Zobrist::hash() {
     uint64_t hash = 0;
 
     if (_position.side_to_move == Color::BLACK) hash ^= _turn;

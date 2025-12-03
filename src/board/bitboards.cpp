@@ -76,14 +76,14 @@ void Bitboards::move_piece(const Color side, const PieceType piece_type, const i
 }
 
 
-const Color Bitboards::is_occupied(int at) const {
+Color Bitboards::is_occupied(int at) const {
     uint64_t mask = (1ULL << at);
     if (!(_position.all_pieces & mask)) return Color::NONE;
     return (_position.colors[Color::WHITE] & mask) ? Color::WHITE : Color::BLACK;
 }
 
 
-const PieceType Bitboards::get_piece_type(const Color side, const int at) const {
+PieceType Bitboards::get_piece_type(const Color side, const int at) const {
     uint64_t mask = (1ULL << at);
     for (int i = 0; i < 6; i++)
     {
