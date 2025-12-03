@@ -2,26 +2,26 @@
 
 #pragma once
 
-#include "game/game_constants.hpp"
-
 #include <bitset>
 #include <cstdint>
 #include <iostream>
+
+#include "game/game_constants.hpp"
 
 /**
  * @brief Represents the state of a chess game.
  */
 struct Position {
-  uint64_t pieces[2][6];
-  uint64_t colors[2];
-  uint64_t all_pieces;
+    uint64_t pieces[2][6];
+    uint64_t colors[2];
+    uint64_t all_pieces;
 
-  Color side_to_move = Color::WHITE;
-  uint8_t castling_rights = UINT8_MAX;
-  int en_passant_square = -1;
-  int halfmove_clock = 0;
-  int fullmove_number = 0;
-  uint64_t zobrist_hash = UINT64_MAX;
+    Color side_to_move = Color::WHITE;
+    uint8_t castling_rights = UINT8_MAX;
+    int en_passant_square = -1;
+    int halfmove_clock = 0;
+    int fullmove_number = 0;
+    uint64_t zobrist_hash = UINT64_MAX;
 };
 
 /**
@@ -31,83 +31,82 @@ struct Position {
  * the bitboards.
  */
 class Bitboards {
-private:
-  Position &_position;
+   private:
+    Position &_position;
 
-  /**
-   * @brief Updates a side bitboard based on its piece bitboards.
-   *
-   * @param side Side bitboard to update.
-   */
-  void update_side(const Color side);
+    /**
+     * @brief Updates a side bitboard based on its piece bitboards.
+     *
+     * @param side Side bitboard to update.
+     */
+    void update_side(const Color side);
 
-  /**
-   * @brief Updates the global bitboard based on the side bitboards.
-   *
-   */
-  void update_all();
+    /**
+     * @brief Updates the global bitboard based on the side bitboards.
+     *
+     */
+    void update_all();
 
-public:
-  Bitboards(Position &game_state);
+   public:
+    Bitboards(Position &game_state);
 
-  ~Bitboards() = default;
+    ~Bitboards() = default;
 
-  /**
-   * @brief Adds a piece to the bitboards.
-   *
-   * @param side Color of the new piece.
-   * @param piece_type Type of the new piece.
-   * @param at Initial position of the new piece.
-   */
-  void add_piece(const Color side, const PieceType piece_type, const int at);
+    /**
+     * @brief Adds a piece to the bitboards.
+     *
+     * @param side Color of the new piece.
+     * @param piece_type Type of the new piece.
+     * @param at Initial position of the new piece.
+     */
+    void add_piece(const Color side, const PieceType piece_type, const int at);
 
-  /**
-   * @brief Removes a piece from the bitboards.
-   *
-   * @param side Color of the piece.
-   * @param piece_type Type of the piece.
-   * @param at Current position of the piece.
-   */
-  void remove_piece(const Color side, const PieceType piece_type, const int at);
+    /**
+     * @brief Removes a piece from the bitboards.
+     *
+     * @param side Color of the piece.
+     * @param piece_type Type of the piece.
+     * @param at Current position of the piece.
+     */
+    void remove_piece(const Color side, const PieceType piece_type, const int at);
 
-  /**
-   * @brief Moves a piece on the bitboards.
-   *
-   * @param side Color of the piece.
-   * @param piece_type Type of the piece.
-   * @param from Current position of the piece.
-   * @param to Destination of the piece.
-   */
-  void move_piece(const Color side, const PieceType piece_type, const int from,
-                  const int to);
+    /**
+     * @brief Moves a piece on the bitboards.
+     *
+     * @param side Color of the piece.
+     * @param piece_type Type of the piece.
+     * @param from Current position of the piece.
+     * @param to Destination of the piece.
+     */
+    void move_piece(const Color side, const PieceType piece_type, const int from, const int to);
 
-  /**
-   * @brief Clears all the bitboards.
-   *
-   */
-  void clear();
+    /**
+     * @brief Clears all the bitboards.
+     *
+     */
+    void clear();
 
-  /**
-   * @brief Checks if a square is occupied by a piece.
-   *
-   * @param at Position to check.
-   * @return The color of the piece that occupies the square.
-   */
-  Color is_occupied(const int at) const;
+    /**
+     * @brief Checks if a square is occupied by a piece.
+     *
+     * @param at Position to check.
+     * @return The color of the piece that occupies the square.
+     */
+    Color is_occupied(const int at) const;
 
-  /**
-   * @brief Gets the type of the piece at a given position.
-   *
-   * @param side Color of side to check.
-   * @param at The position to check.
-   * @return The type of the piece that occupies the square.
-   */
-  PieceType get_piece_type(const Color side, const int at) const;
+    /**
+     * @brief Gets the type of the piece at a given position.
+     *
+     * @param side Color of side to check.
+     * @param at The position to check.
+     * @return The type of the piece that occupies the square.
+     */
+    PieceType get_piece_type(const Color side, const int at) const;
 
-  /**
-   * @brief Prints a bitboard for debugging.
-   *
-   * @param bb The bitboard to print.
-   */
-  void print_board(uint64_t bb) const;
+    /**
+     * @brief Prints a bitboard for debugging.
+     *
+     * @param bb The bitboard to print.
+     */
+    void print_board(uint64_t bb) const;
 };
