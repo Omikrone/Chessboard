@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.4.0] - 2025-12-03
+## [1.4.0] - 2025-12-07
 
 ### Added
 - Public function to get the history of moves made in the game.
