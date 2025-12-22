@@ -2,50 +2,47 @@
 
 #include "moves/move_generator.hpp"
 
-std::vector<Move> MoveGenerator::all_possible_moves(const Color side, const Position &game_state,
-                                                    const Bitboards &board) {
+std::vector<Move> MoveGenerator::all_possible_moves(const Color side) {
     std::vector<Move> moves;
     uint64_t mask;
     for (int i = 0; i < 64; i++) {
         mask = 1ULL << i;
 
-        if ((game_state.colors[side] & mask) == 0) continue;
+        if ((_pos.colors[side] & mask) == 0) continue;
 
-        const PieceType piece_type = board.get_piece_type(side, i);
+        const PieceType piece_type = _board.get_piece_type(side, i);
         if (piece_type == PieceType::NONE_PIECE) {
             continue;
         }
 
-        std::vector<Move> p_moves = piece_moves(i, side, piece_type, game_state);
+        std::vector<Move> p_moves = piece_moves(i, side, piece_type);
         moves.insert(moves.end(), p_moves.begin(), p_moves.end());
     }
     return moves;
 }
 
-std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType &piece_type,
-                                             const Position &game_state) {
+std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType &piece_type) {
     std::vector<Move> moves;
 
     Color opponent_side = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
     switch (piece_type) {
         case PieceType::PAWN:
-            moves = pawn_moves(square, game_state, side, ~game_state.all_pieces, game_state.colors[opponent_side]);
+            moves = pawn_moves(square, side);
             break;
         case PieceType::BISHOP:
-            moves = MoveGenerator::bishop_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
+            moves = bishop_moves(square, side);
             break;
         case PieceType::KNIGHT:
-            moves = knight_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
+            moves = knight_moves(square, side);
             break;
         case PieceType::ROOK:
-            moves = rook_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
+            moves = rook_moves(square, side);
             break;
         case PieceType::QUEEN:
-            moves = queen_moves(square, game_state.colors[side], game_state.colors[opponent_side]);
+            moves = queen_moves(square, side);
             break;
         case PieceType::KING:
-            moves = king_moves(square, side, game_state.colors[side], game_state.colors[opponent_side],
-                               game_state.castling_rights);
+            moves = king_moves(square, side);
             break;
         default:
             break;
@@ -53,9 +50,10 @@ std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side,
     return moves;
 }
 
-std::vector<Move> MoveGenerator::pawn_moves(const int square, const Position &game_state, const Color side,
-                                            const uint64_t empty_squares, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    uint64_t empty_squares = ~_pos.all_pieces;
 
     int rank = square / 8;
     int file = square % 8;
@@ -80,18 +78,18 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Position &ga
             // capture à droite (vers file + 1)
             if (file < 7) {
                 int target = square + 9;
-                if ((opponent_side >> target) & 1)
+                if ((_pos.colors[opponent] >> target) & 1)
                     moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
+                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
 
             // capture à gauche (vers file - 1)
             if (file > 0) {
                 int target = square + 7;
-                if ((opponent_side >> target) & 1)
+                if ((_pos.colors[opponent] >> target) & 1)
                     moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
+                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
         }
@@ -115,18 +113,18 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Position &ga
             // capture à droite (vers file + 1)
             if (file < 7) {
                 int target = square - 7;
-                if ((opponent_side >> target) & 1)
+                if ((_pos.colors[opponent] >> target) & 1)
                     moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
+                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
 
             // capture à gauche (vers file - 1)
             if (file > 0) {
                 int target = square - 9;
-                if ((opponent_side >> target) & 1)
+                if ((_pos.colors[opponent] >> target) & 1)
                     moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (game_state.en_passant_square != -1 && game_state.en_passant_square == target)
+                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
                     moves.push_back({square, target, MoveType::EN_PASSANT, true});
             }
         }
@@ -135,8 +133,9 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Position &ga
     return moves;
 }
 
-std::vector<Move> MoveGenerator::knight_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::knight_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
 
     const int dx[] = {2, 1, -1, -2, -2, -1, 1, 2};
     const int dy[] = {1, 2, 2, 1, -1, -2, -2, -1};
@@ -152,16 +151,17 @@ std::vector<Move> MoveGenerator::knight_moves(const int square, const uint64_t s
 
         int to = toY * 8 + toX;
         uint64_t mask = 1ULL << to;
-        if (side & mask) continue;
+        if (_pos.colors[side] & mask) continue;
 
-        bool is_capture = opponent_side & mask;
+        bool is_capture = _pos.colors[opponent]; & mask;
         moves.push_back({square, (int)to, MoveType::NORMAL, is_capture});
     }
     return moves;
 }
 
-std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::rook_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
 
     const int directions[] = {8, 1, -8, -1};
     int fromX = square % 8;
@@ -179,9 +179,9 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t sid
 
             uint64_t mask = 1ULL << to;
 
-            if (side & mask)
+            if (_pos.colors[side] & mask)
                 break;
-            else if (opponent_side & mask) {
+            else if (_pos.colors[opponent]; & mask) {
                 moves.push_back({square, to, MoveType::NORMAL, true});
                 break;
             } else {
@@ -193,8 +193,9 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const uint64_t sid
     return moves;
 }
 
-std::vector<Move> MoveGenerator::bishop_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
+std::vector<Move> MoveGenerator::bishop_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
 
     const int directions[] = {7, -7, -9, 9};
     int fromX = square % 8;
@@ -214,9 +215,9 @@ std::vector<Move> MoveGenerator::bishop_moves(const int square, const uint64_t s
 
             uint64_t mask = 1ULL << to;
 
-            if (side & mask)
+            if (_pos.colors[side] & mask)
                 break;
-            else if (opponent_side & mask) {
+            else if (_pos.colors[opponent] & mask) {
                 moves.push_back({square, to, MoveType::NORMAL, true});
                 break;
             } else {
@@ -228,16 +229,17 @@ std::vector<Move> MoveGenerator::bishop_moves(const int square, const uint64_t s
     return moves;
 }
 
-std::vector<Move> MoveGenerator::queen_moves(const int square, const uint64_t side, const uint64_t opponent_side) {
-    std::vector<Move> bishop_moves = MoveGenerator::bishop_moves(square, side, opponent_side);
-    std::vector<Move> rook_moves = MoveGenerator::rook_moves(square, side, opponent_side);
+std::vector<Move> MoveGenerator::queen_moves(const int square, const Color side) {
+    std::vector<Move> bishop_moves = MoveGenerator::bishop_moves(square, side);
+    std::vector<Move> rook_moves = MoveGenerator::rook_moves(square, side);
     bishop_moves.insert(bishop_moves.end(), rook_moves.begin(), rook_moves.end());
     return bishop_moves;
 }
 
-std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c, const uint64_t side,
-                                            const uint64_t opponent_side, uint8_t castling_rights) {
+std::vector<Move> MoveGenerator::king_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
+
     int fromX = square % 8;
     int fromY = square / 8;
 
@@ -251,20 +253,20 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const Color side_c
             int to = square + x + y * 8;
 
             uint64_t mask = 1ULL << to;
-            if (side & mask) continue;
-            if (opponent_side & mask)
+            if (_pos.colors[side] & mask) continue;
+            if (_pos.colors[opponent] & mask)
                 moves.push_back({square, to, MoveType::NORMAL, true});
             else
                 moves.push_back({square, to, MoveType::NORMAL, false});
         }
     }
 
-    uint64_t all_pieces = side | opponent_side;
-    if ((castling_rights >> (side_c * 2) & 1) && ((all_pieces >> (square + 1)) & 1) == 0 &&
+    uint64_t all_pieces = side | _pos.colors[opponent];
+    if ((_pos.castling_rights >> (side * 2) & 1) && ((all_pieces >> (square + 1)) & 1) == 0 &&
         ((all_pieces >> (square + 2)) & 1) == 0) {
         moves.push_back({square, square + 2, MoveType::CASTLE_KINGSIDE, false});
     }
-    if ((castling_rights >> (side_c * 2 + 1) & 1) && ((all_pieces >> (square - 1)) & 1) == 0 &&
+    if ((_pos.castling_rights >> (side * 2 + 1) & 1) && ((all_pieces >> (square - 1)) & 1) == 0 &&
         ((all_pieces >> (square - 2)) & 1) == 0 && ((all_pieces >> (square - 3)) & 1) == 0) {
         moves.push_back({square, square - 2, MoveType::CASTLE_QUEENSIDE, false});
     }
