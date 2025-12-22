@@ -2,6 +2,13 @@
 
 #include "moves/move_generator.hpp"
 
+MoveGenerator::MoveGenerator(const Position& pos, const Bitboards& board):
+    _pos(pos),
+    _board(board)
+{
+    ChessTables::init_knight_table();
+}
+
 std::vector<Move> MoveGenerator::all_possible_moves(const Color side) {
     std::vector<Move> moves;
     uint64_t mask;
@@ -24,7 +31,6 @@ std::vector<Move> MoveGenerator::all_possible_moves(const Color side) {
 std::vector<Move> MoveGenerator::piece_moves(const int square, const Color side, const PieceType &piece_type) {
     std::vector<Move> moves;
 
-    Color opponent_side = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
     switch (piece_type) {
         case PieceType::PAWN:
             moves = pawn_moves(square, side);
@@ -135,27 +141,20 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side) 
 
 std::vector<Move> MoveGenerator::knight_moves(const int square, const Color side) {
     std::vector<Move> moves;
+    moves.reserve(8);
     Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    
+    uint64_t attacks = ChessTables::knight_attacks[square];
 
-    const int dx[] = {2, 1, -1, -2, -2, -1, 1, 2};
-    const int dy[] = {1, 2, 2, 1, -1, -2, -2, -1};
-
-    int fromX = square % 8;
-    int fromY = square / 8;
-
-    for (int i = 0; i < 8; i++) {
-        int toX = fromX + dx[i];
-        int toY = fromY + dy[i];
-
-        if (toX < 0 || toX > 7 || toY < 0 || toY > 7) continue;
-
-        int to = toY * 8 + toX;
-        uint64_t mask = 1ULL << to;
-        if (_pos.colors[side] & mask) continue;
-
-        bool is_capture = _pos.colors[opponent]; & mask;
-        moves.push_back({square, (int)to, MoveType::NORMAL, is_capture});
+    attacks &= ~_pos.colors[side];
+    
+    while (attacks) {
+        int to = bitscan_forward(attacks);
+        bool is_capture = (_pos.colors[opponent] >> to) & 1;
+        moves.push_back({square, to, MoveType::NORMAL, is_capture});
+        attacks &= attacks - 1;
     }
+    
     return moves;
 }
 
@@ -181,7 +180,7 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const Color side) 
 
             if (_pos.colors[side] & mask)
                 break;
-            else if (_pos.colors[opponent]; & mask) {
+            else if (_pos.colors[opponent] & mask) {
                 moves.push_back({square, to, MoveType::NORMAL, true});
                 break;
             } else {

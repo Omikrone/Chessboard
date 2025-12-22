@@ -25,6 +25,7 @@ class Game {
     Bitboards _board;
     GameHistory _history;
     Zobrist _zobrist;
+    MoveGenerator _generator;
     MoveExecutor _executor;
     MoveValidator _validator;
 

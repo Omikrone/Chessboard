@@ -2,11 +2,11 @@
 
 #include "rules/move_validator.hpp"
 
-MoveValidator::MoveValidator(Position &game_state, Bitboards &board, MoveExecutor &executor)
-    : _position(game_state), _board(board), _executor(executor) {}
+MoveValidator::MoveValidator(Position &game_state, Bitboards &board, MoveExecutor &executor, MoveGenerator& generator)
+    : _position(game_state), _board(board), _executor(executor), _generator(generator) {}
 
 bool MoveValidator::is_square_attacked(const int square, const Color opponent) const {
-    std::vector<Move> enemy_moves = MoveGenerator::all_possible_moves(opponent, _position, _board);
+    std::vector<Move> enemy_moves = _generator.all_possible_moves(opponent);
     for (Move &m : enemy_moves) {
         if (m.to == square) return true;
     }

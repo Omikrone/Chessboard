@@ -8,6 +8,8 @@
 #include "board/bitboards.hpp"
 #include "game/game_constants.hpp"
 #include "moves/move.hpp"
+#include "moves/tables/tables.hpp"
+#include "bit_scan.hpp"
 
 /**
  * @brief Class respresenting the generation of raw moves.
@@ -18,10 +20,10 @@ class MoveGenerator {
    private:
       const Position& _pos;
       const Bitboards& _board;
-      MoveGenerator(const Position& pos, const Bitboards& board);
-      ~MoveGenerator() = default;
 
    public:
+      MoveGenerator(const Position& pos, const Bitboards& board);
+      ~MoveGenerator() = default;
       std::vector<Move> all_possible_moves(const Color side);
       std::vector<Move> piece_moves(const int square, const Color side, const PieceType &piece_type);
       std::vector<Move> pawn_moves(const int square, const Color side);
