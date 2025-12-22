@@ -98,6 +98,8 @@ class Game {
      */
     std::vector<Move> get_legal_moves();
 
+    std::vector<Move> get_capture_moves();
+
     /**
      * @brief Gets the board of the game.
      *

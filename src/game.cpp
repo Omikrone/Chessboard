@@ -81,6 +81,18 @@ std::vector<Move> Game::get_legal_moves() {
     return legal_moves;
 }
 
+std::vector<Move> Game::get_capture_moves() {
+    std::vector<Move> capture_moves;
+
+    std::vector<Move> possible_moves = _generator.all_possible_moves(_position.side_to_move);
+    for (Move m : possible_moves) {
+        if (_validator.is_legal(m) && m.take) {
+            capture_moves.push_back(m);
+        }
+    }
+
+    return capture_moves;
+}
 std::vector<Move> Game::get_played_moves() const { return _history.get_moves(); }
 
 Bitboards &Game::get_board() { return _board; }
