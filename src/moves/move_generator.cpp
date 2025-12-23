@@ -7,6 +7,11 @@ MoveGenerator::MoveGenerator(const Position& pos, const Bitboards& board):
     _board(board)
 {
     ChessTables::init_knight_table();
+    ChessTables::init_king_table();
+    ChessTables::init_white_pawn_pushes_table();
+    ChessTables::init_white_pawn_attacks_table();
+    ChessTables::init_black_pawn_pushes_table();
+    ChessTables::init_black_pawn_attacks_table();
 }
 
 std::vector<Move> MoveGenerator::all_possible_moves(const Color side) {
@@ -61,78 +66,43 @@ std::vector<Move> MoveGenerator::pawn_moves(const int square, const Color side) 
     Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
     uint64_t empty_squares = ~_pos.all_pieces;
 
+    int direction = (side == Color::WHITE) ? 8 : -8;
+    int start_rank = (side == Color::WHITE) ? 1 : 6;
+    int promotion_rank = (side == Color::WHITE) ? 7 : 0;
     int rank = square / 8;
-    int file = square % 8;
 
-    if (side == Color::WHITE) {
-        // Avance simple
-        if (rank < 7) {
-            if ((empty_squares >> (square + 8)) & 1) {
-                if (rank == 6)
-                    moves.push_back({square, square + 8, MoveType::PROMOTION, false});
-                else
-                    moves.push_back({square, square + 8, MoveType::NORMAL, false});
-
-                // Avance double depuis la 2e rangée
-                if (rank == 1 && ((empty_squares >> (square + 16)) & 1))
-                    moves.push_back({square, square + 16, MoveType::NORMAL, false});
-            }
-        }
-
-        // Captures diagonales
-        if (rank < 7) {
-            // capture à droite (vers file + 1)
-            if (file < 7) {
-                int target = square + 9;
-                if ((_pos.colors[opponent] >> target) & 1)
-                    moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
-                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
-            }
-
-            // capture à gauche (vers file - 1)
-            if (file > 0) {
-                int target = square + 7;
-                if ((_pos.colors[opponent] >> target) & 1)
-                    moves.push_back({square, target, (rank == 6 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
-                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
+    int to = square + direction;
+    if ((empty_squares >> to) & 1) {
+        bool is_promo = (to / 8 == promotion_rank);
+        MoveType type = is_promo ? MoveType::PROMOTION : MoveType::NORMAL;
+        
+        moves.push_back({square, to, type, false});
+        if (rank == start_rank) {
+            int to_double = square + (direction * 2);
+            if ((empty_squares >> to_double) & 1) {
+                moves.push_back({square, to_double, MoveType::NORMAL, false});
             }
         }
     }
 
-    else {  // BLACK
-        if (rank > 0) {
-            if ((empty_squares >> (square - 8)) & 1) {
-                if (rank == 1)
-                    moves.push_back({square, square - 8, MoveType::PROMOTION, false});
-                else
-                    moves.push_back({square, square - 8, MoveType::NORMAL, false});
+    uint64_t potential_attacks = ChessTables::pawn_attacks[side][square];
+    uint64_t regular_captures = potential_attacks & _pos.colors[opponent];
+    
+    while (regular_captures) {
+        int to_attack = bitscan_forward(regular_captures);
+        bool is_promo = (to_attack / 8 == promotion_rank);
+        MoveType type = is_promo ? MoveType::PROMOTION : MoveType::NORMAL;
 
-                if (rank == 6 && ((empty_squares >> (square - 16)) & 1))
-                    moves.push_back({square, square - 16, MoveType::NORMAL, false});
-            }
-        }
+        moves.push_back({square, to_attack, type, true});
+        regular_captures &= regular_captures - 1;
+    }
 
-        // Captures diagonales
-        if (rank > 0) {
-            // capture à droite (vers file + 1)
-            if (file < 7) {
-                int target = square - 7;
-                if ((_pos.colors[opponent] >> target) & 1)
-                    moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
-                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
-            }
 
-            // capture à gauche (vers file - 1)
-            if (file > 0) {
-                int target = square - 9;
-                if ((_pos.colors[opponent] >> target) & 1)
-                    moves.push_back({square, target, (rank == 1 ? MoveType::PROMOTION : MoveType::NORMAL), true});
-                else if (_pos.en_passant_square != -1 && _pos.en_passant_square == target)
-                    moves.push_back({square, target, MoveType::EN_PASSANT, true});
-            }
+    if (_pos.en_passant_square != -1) {
+        uint64_t ep_mask = 1ULL << _pos.en_passant_square;
+
+        if (potential_attacks & ep_mask) {
+            moves.push_back({square, _pos.en_passant_square, MoveType::EN_PASSANT, true});
         }
     }
 
