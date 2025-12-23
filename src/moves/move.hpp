@@ -24,6 +24,8 @@ struct Move {
 
     bool operator==(const Move &other) const { return (this->from == other.from && this->to == other.to); }
 
+    bool operator!=(const Move &other) const { return (this->from != other.from || this->to != other.to); }
+
     static Move from_uci(const std::string &uci) {
         Move move;
         move.from = (uci[1] - '1') * 8 + (uci[0] - 'a');

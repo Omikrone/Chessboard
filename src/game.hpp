@@ -25,6 +25,7 @@ class Game {
     Bitboards _board;
     GameHistory _history;
     Zobrist _zobrist;
+    MoveGenerator _generator;
     MoveExecutor _executor;
     MoveValidator _validator;
 
@@ -96,6 +97,8 @@ class Game {
      * @return A vector of the moves.
      */
     std::vector<Move> get_legal_moves();
+
+    std::vector<Move> get_capture_moves();
 
     /**
      * @brief Gets the board of the game.

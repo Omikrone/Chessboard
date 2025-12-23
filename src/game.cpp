@@ -6,8 +6,9 @@ Game::Game()
     : _board(_position),
       _history(),
       _zobrist(_position, _board),
+      _generator(_position, _board),
       _executor(_history, _position, _board, _zobrist),
-      _validator(_position, _board, _executor) {}
+      _validator(_position, _board, _executor, _generator) {}
 
 bool Game::try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece) {
     Color piece_color = _board.is_occupied(from);
@@ -15,10 +16,11 @@ bool Game::try_apply_move(const int from, const int to, const std::optional<Piec
     PieceType piece_type = _board.get_piece_type(_position.side_to_move, from);
 
     // Verifies that the move is legal
-    std::vector<Move> moves = MoveGenerator::piece_moves(from, _position.side_to_move, piece_type, _position);
+    std::vector<Move> moves = _generator.piece_moves(from, _position.side_to_move, piece_type);
     for (Move m : moves) {
         if (m.from == from && m.to == to && _validator.is_legal(m)) {
             _executor.make_move(_position.side_to_move, m, promotion_piece);
+            next_turn();
             return true;
         }
     }
@@ -70,7 +72,7 @@ void Game::load_fen(std::string &fen) { FEN::load(fen, _position, _board); }
 std::vector<Move> Game::get_legal_moves() {
     std::vector<Move> legal_moves;
 
-    std::vector<Move> possible_moves = MoveGenerator::all_possible_moves(_position.side_to_move, _position, _board);
+    std::vector<Move> possible_moves = _generator.all_possible_moves(_position.side_to_move);
     for (Move m : possible_moves) {
         if (_validator.is_legal(m)) {
             legal_moves.push_back(m);
@@ -80,6 +82,18 @@ std::vector<Move> Game::get_legal_moves() {
     return legal_moves;
 }
 
+std::vector<Move> Game::get_capture_moves() {
+    std::vector<Move> capture_moves;
+
+    std::vector<Move> possible_moves = _generator.all_possible_moves(_position.side_to_move);
+    for (Move m : possible_moves) {
+        if (_validator.is_legal(m) && m.take) {
+            capture_moves.push_back(m);
+        }
+    }
+
+    return capture_moves;
+}
 std::vector<Move> Game::get_played_moves() const { return _history.get_moves(); }
 
 Bitboards &Game::get_board() { return _board; }

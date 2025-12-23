@@ -22,6 +22,7 @@ class MoveValidator {
     Position &_position;
     Bitboards &_board;
     MoveExecutor &_executor;
+    MoveGenerator& _generator;
 
     /**
      * @brief Checks if a square is attacked by the opponent.
@@ -50,7 +51,7 @@ class MoveValidator {
     int find_king(const Color king_color) const;
 
    public:
-    MoveValidator(Position &position, Bitboards &board, MoveExecutor &executor);
+    MoveValidator(Position &position, Bitboards &board, MoveExecutor &executor, MoveGenerator& generator);
 
     ~MoveValidator() = default;
 
