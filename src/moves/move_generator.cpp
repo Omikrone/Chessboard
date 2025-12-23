@@ -260,7 +260,7 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const Color side) 
         }
     }
 
-    uint64_t all_pieces = side | _pos.colors[opponent];
+    uint64_t all_pieces = _pos.colors[side] | _pos.colors[opponent];
     if ((_pos.castling_rights >> (side * 2) & 1) && ((all_pieces >> (square + 1)) & 1) == 0 &&
         ((all_pieces >> (square + 2)) & 1) == 0) {
         moves.push_back({square, square + 2, MoveType::CASTLE_KINGSIDE, false});

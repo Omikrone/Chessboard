@@ -20,6 +20,7 @@ bool Game::try_apply_move(const int from, const int to, const std::optional<Piec
     for (Move m : moves) {
         if (m.from == from && m.to == to && _validator.is_legal(m)) {
             _executor.make_move(_position.side_to_move, m, promotion_piece);
+            next_turn();
             return true;
         }
     }

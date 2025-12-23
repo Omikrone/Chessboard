@@ -3,6 +3,8 @@
 #include <cstdint>
 
 inline int bitscan_forward(uint64_t bb) {
+    if (bb == 0) return -1;
+    
     static const int index64[64] = {
         0, 47,  1, 56, 48, 27,  2, 60,
         57, 49, 41, 37, 28, 16,  3, 61,
@@ -13,6 +15,7 @@ inline int bitscan_forward(uint64_t bb) {
         25, 39, 14, 33, 19, 30,  9, 24,
         13, 18,  8, 12,  7,  6,  5, 63
     };
+    
     const uint64_t debruijn64 = 0x03f79d71b4cb0a89ULL;
-    return index64[((bb ^ (bb - 1)) * debruijn64) >> 58];
+    return index64[((bb & -bb) * debruijn64) >> 58];
 }
