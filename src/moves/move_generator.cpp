@@ -239,25 +239,15 @@ std::vector<Move> MoveGenerator::king_moves(const int square, const Color side) 
     std::vector<Move> moves;
     Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
 
-    int fromX = square % 8;
-    int fromY = square / 8;
+    uint64_t attacks = ChessTables::king_attacks[square];
 
-    for (int x = -1; x <= 1; x++) {
-        for (int y = -1; y <= 1; y++) {
-            if (x == 0 && y == 0) continue;
-            int toX = fromX + x;
-            int toY = fromY + y;
-
-            if (toX < 0 || toX > 7 || toY < 0 || toY > 7) continue;
-            int to = square + x + y * 8;
-
-            uint64_t mask = 1ULL << to;
-            if (_pos.colors[side] & mask) continue;
-            if (_pos.colors[opponent] & mask)
-                moves.push_back({square, to, MoveType::NORMAL, true});
-            else
-                moves.push_back({square, to, MoveType::NORMAL, false});
-        }
+    attacks &= ~_pos.colors[side];
+    
+    while (attacks) {
+        int to = bitscan_forward(attacks);
+        bool is_capture = (_pos.colors[opponent] >> to) & 1;
+        moves.push_back({square, to, MoveType::NORMAL, is_capture});
+        attacks &= attacks - 1;
     }
 
     uint64_t all_pieces = _pos.colors[side] | _pos.colors[opponent];
