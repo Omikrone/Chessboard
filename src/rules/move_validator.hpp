@@ -63,6 +63,8 @@ class MoveValidator {
      */
     bool is_legal(const Move &move);
 
+    bool is_check(const Move &move);
+
     /**
      * @brief Checks if a king is in check by the opponent.
      *

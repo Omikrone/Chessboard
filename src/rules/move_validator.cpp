@@ -45,6 +45,16 @@ bool MoveValidator::is_legal(const Move &move) {
     return result;
 }
 
+bool MoveValidator::is_check(const Move &move) {
+    bool result;
+    Color opponent = (_position.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE;
+
+    _executor.make_move(_position.side_to_move, move);
+    result = is_king_in_check(opponent);
+    _executor.unmake_last_move();
+    return result;
+}
+
 bool MoveValidator::check_castle(const Move &move, const Color king_color) const {
     int square = find_king(king_color);
     Color opponent_color = (king_color == Color::WHITE) ? Color::BLACK : Color::WHITE;
