@@ -62,6 +62,8 @@ class MoveValidator {
      * @return true if the move is legal, else false.
      */
     bool is_legal(const Move &move);
+    
+    std::pair<bool, bool> is_legal_and_check(const Move &move);
 
     /**
      * @brief Checks if a king is in check by the opponent.

@@ -92,6 +92,20 @@ void MoveExecutor::normal(UndoMove &undo, const Color side, const Move &move) {
         PieceType opponent_piece = _board.get_piece_type(opponent_color, move.to);
         undo.taken_piece = opponent_piece;
         _board.remove_piece(opponent_color, opponent_piece, move.to);
+        switch (move.to) {
+            case 0:
+                _position.castling_rights &= ~(1 << 1);
+                break;
+            case 7:
+                _position.castling_rights &= ~(1 << 0);
+                break;
+            case 56:
+                _position.castling_rights &= ~(1 << 3);
+                break;
+            case 63:
+                _position.castling_rights &= ~(1 << 2);
+                break;
+        }
     }
     PieceType piece_type = _board.get_piece_type(side, move.from);
     _board.move_piece(side, piece_type, move.from, move.to);
