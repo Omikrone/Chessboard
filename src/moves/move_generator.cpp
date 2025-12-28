@@ -131,35 +131,31 @@ std::vector<Move> MoveGenerator::knight_moves(const int square, const Color side
 std::vector<Move> MoveGenerator::rook_moves(const int square, const Color side) {
     std::vector<Move> moves;
     Color opponent = (side == Color::WHITE) ? Color::BLACK : Color::WHITE;
-    
+
     const int directions[] = {8, 1, -8, -1};
-    int fromRow = square / 8;
-    int fromCol = square % 8;
-    
+    int fromX = square % 8;
+
+    int count;
     for (int d : directions) {
-        for (int count = 1; ; count++) {
+        count = 1;
+        while (true) {
             int to = square + d * count;
+
+            int toX = to % 8;
             if (to < 0 || to > 63) break;
 
-            if (d == 1 || d == -1) {
-                int toRow = to / 8;
-                if (toRow != fromRow) break;
-            }
+            if ((d == 1 || d == -1) && std::abs(toX - fromX) != count) break;
 
-            if (d == 8 || d == -8) {
-                int toCol = to % 8;
-                if (toCol != fromCol) break;
-            }
-            
             uint64_t mask = 1ULL << to;
-            
-            if (_pos.colors[side] & mask) {
+
+            if (_pos.colors[side] & mask)
                 break;
-            } else if (_pos.colors[opponent] & mask) {
+            else if (_pos.colors[opponent] & mask) {
                 moves.push_back({square, to, MoveType::NORMAL, true});
                 break;
             } else {
                 moves.push_back({square, to, MoveType::NORMAL, false});
+                count++;
             }
         }
     }
