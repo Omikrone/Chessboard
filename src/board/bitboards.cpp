@@ -90,3 +90,13 @@ void Bitboards::print_board(uint64_t bb) const {
         std::cout << std::endl;
     }
 }
+
+void Bitboards::print_all_boards() const {
+    for (int side = 0; side < 2; side++) {
+        for (int piece = 0; piece < 6; piece++) {
+            std::cout << "Bitboard for side " << side << ", piece " << piece << " :" << std::endl;
+            print_board(_position.pieces[side][piece]);
+            std::cout << std::endl;
+        }
+    }
+}
