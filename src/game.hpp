@@ -40,7 +40,7 @@ class Game {
      * @param move Move to apply.
      * @return true if the move is legal, else false.
      */
-    bool try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece = std::nullopt);
+    bool try_apply_move(Move const &move);
 
     /**
      * @brief Switch the current turn.

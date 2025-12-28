@@ -10,21 +10,21 @@ Game::Game()
       _executor(_history, _position, _board, _zobrist),
       _validator(_position, _board, _executor, _generator) {}
 
-bool Game::try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece) {
-    Color piece_color = _board.is_occupied(from);
+bool Game::try_apply_move(Move const &move) {
+    Color piece_color = _board.is_occupied(move.from);
     if (piece_color != _position.side_to_move) return false;  // The player can't play a piece from the other side
-    PieceType piece_type = _board.get_piece_type(_position.side_to_move, from);
-    if (from < 0 || from >= 64 || to < 0 || to >= 64) {
-        std::cerr << "Error: Invalid move coordinates (" << from << " to " << to << ")." << std::endl;
+    PieceType piece_type = _board.get_piece_type(_position.side_to_move, move.from);
+    if (move.from < 0 || move.from >= 64 || move.to < 0 || move.to >= 64) {
+        std::cerr << "Error: Invalid move coordinates (" << move.from << " to " << move.to << ")." << std::endl;
         std::cerr << "Piece color: " << static_cast<int>(piece_color) << ", piece type: " << static_cast<int>(piece_type) << std::endl;
         exit(EXIT_FAILURE);
     }
 
     // Verifies that the move is legal
-    std::vector<Move> moves = _generator.piece_moves(from, _position.side_to_move, piece_type);
+    std::vector<Move> moves = _generator.piece_moves(move.from, _position.side_to_move, piece_type);
     for (Move m : moves) {
-        if (m.from == from && m.to == to && _validator.is_legal(m)) {
-            _executor.make_move(_position.side_to_move, m, promotion_piece);
+        if (m.from == move.from && m.to == move.to && _validator.is_legal(m)) {
+            _executor.make_move(_position.side_to_move, m, move.promotion_type);
             next_turn();
             return true;
         }
