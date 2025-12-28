@@ -14,6 +14,11 @@ bool Game::try_apply_move(const int from, const int to, const std::optional<Piec
     Color piece_color = _board.is_occupied(from);
     if (piece_color != _position.side_to_move) return false;  // The player can't play a piece from the other side
     PieceType piece_type = _board.get_piece_type(_position.side_to_move, from);
+    if (from < 0 || from >= 64 || to < 0 || to >= 64) {
+        std::cerr << "Error: Invalid move coordinates (" << from << " to " << to << ")." << std::endl;
+        std::cerr << "Piece color: " << static_cast<int>(piece_color) << ", piece type: " << static_cast<int>(piece_type) << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     // Verifies that the move is legal
     std::vector<Move> moves = _generator.piece_moves(from, _position.side_to_move, piece_type);
@@ -84,16 +89,18 @@ std::vector<Move> Game::get_legal_moves() {
 
 std::vector<Move> Game::get_capture_and_check_moves() {
     std::vector<Move> capture_and_check_moves;
-
+    
     std::vector<Move> possible_moves = _generator.all_possible_moves(_position.side_to_move);
     for (Move m : possible_moves) {
-        if (_validator.is_legal(m) && (m.take || _validator.is_check(m))) {
+        auto [legal, gives_check] = _validator.is_legal_and_check(m);
+        if (legal && (m.take || gives_check)) {
             capture_and_check_moves.push_back(m);
         }
     }
-
+    
     return capture_and_check_moves;
 }
+
 std::vector<Move> Game::get_played_moves() const { return _history.get_moves(); }
 
 Bitboards &Game::get_board() { return _board; }

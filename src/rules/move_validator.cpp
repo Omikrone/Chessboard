@@ -45,14 +45,26 @@ bool MoveValidator::is_legal(const Move &move) {
     return result;
 }
 
-bool MoveValidator::is_check(const Move &move) {
-    bool result;
-    Color opponent = (_position.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE;
-
+std::pair<bool, bool> MoveValidator::is_legal_and_check(const Move &move) {
+    bool legal = false;
+    bool gives_check = false;
+    
+    if (move.type == MoveType::CASTLE_KINGSIDE || move.type == MoveType::CASTLE_QUEENSIDE) {
+        legal = check_castle(move, _position.side_to_move);
+        if (legal) {
+            _executor.make_move(_position.side_to_move, move);
+            gives_check = is_king_in_check((_position.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE);
+            _executor.unmake_last_move();
+        }
+        return {legal, gives_check};
+    }
+    
     _executor.make_move(_position.side_to_move, move);
-    result = is_king_in_check(opponent);
+    legal = !is_king_in_check(_position.side_to_move);
+    gives_check = is_king_in_check((_position.side_to_move == Color::WHITE) ? Color::BLACK : Color::WHITE);
+    
     _executor.unmake_last_move();
-    return result;
+    return {legal, gives_check};
 }
 
 bool MoveValidator::check_castle(const Move &move, const Color king_color) const {
