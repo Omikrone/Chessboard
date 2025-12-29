@@ -134,6 +134,7 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const Color side) 
 
     const int directions[] = {8, 1, -8, -1};
     int fromX = square % 8;
+    int fromY = square / 8;
 
     int count;
     for (int d : directions) {
@@ -142,9 +143,10 @@ std::vector<Move> MoveGenerator::rook_moves(const int square, const Color side) 
             int to = square + d * count;
 
             int toX = to % 8;
+            int toY = to / 8;
             if (to < 0 || to > 63) break;
 
-            if ((d == 1 || d == -1) && std::abs(toX - fromX) != count) break;
+            if ((d == 1 || d == -1) && (std::abs(toX - fromX) != count || fromY != toY)) break;
 
             uint64_t mask = 1ULL << to;
 
