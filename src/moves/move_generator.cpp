@@ -1,5 +1,3 @@
-// move_generator.cpp
-
 #include "moves/move_generator.hpp"
 
 MoveGenerator::MoveGenerator(const Position& pos, const Bitboards& board):

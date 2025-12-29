@@ -1,5 +1,3 @@
-// game_history.cpp
-
 #include "game_history.hpp"
 
 GameHistory::GameHistory() {

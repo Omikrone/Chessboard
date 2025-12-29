@@ -1,5 +1,3 @@
-// move.hpp
-
 #pragma once
 
 #include <cstdint>
@@ -27,6 +25,12 @@ struct Move {
 
     bool operator!=(const Move &other) const { return (this->from != other.from || this->to != other.to); }
 
+    /**
+     * @brief Creates a Move from its UCI notation.
+     *
+     * @param uci The UCI notation of the move.
+     * @return The corresponding Move.
+     */
     static Move from_uci(const std::string &uci) {
         Move move;
         move.from = (uci[1] - '1') * 8 + (uci[0] - 'a');
@@ -56,6 +60,11 @@ struct Move {
         return move;
     }
 
+    /**
+     * @brief Converts the Move to its UCI notation.
+     *
+     * @return A string representing the UCI notation of the move.
+     */
     std::string to_uci() const {
         std::string uci;
         uci += ('a' + (this->from % 8));
@@ -83,6 +92,9 @@ struct Move {
         return uci;
     }
 
+    /**
+     * @brief Prints the move to the standard output.
+     */
     void print() const {
         std::cout << "{" << std::to_string(this->from) << " : " << std::to_string(this->to) << "}" << std::endl;
     }

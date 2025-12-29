@@ -1,5 +1,3 @@
-// fen.cpp
-
 #include "fen.hpp"
 
 std::string FEN::to_string(const Position &position, const Bitboards &board) {

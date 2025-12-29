@@ -1,5 +1,3 @@
-// fen.hpp
-
 #pragma once
 
 #include <cctype>
