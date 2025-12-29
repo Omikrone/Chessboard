@@ -25,7 +25,8 @@ void MoveExecutor::make_move(const Color side, const Move &move, const PieceType
             break;
         case MoveType::PROMOTION:
             normal(undo, side, move);
-            promotion(side, move.to, promotion_piece);
+            if (promotion_piece == PieceType::NONE_PIECE) promotion(side, move.to, PieceType::QUEEN);
+            else promotion(side, move.to, promotion_piece);
             break;
         default:
             normal(undo, side, move);
@@ -47,6 +48,9 @@ void MoveExecutor::make_move(const Color side, const Move &move, const PieceType
         _position.halfmove_clock++;
 
     undo.move = move;
+    if (move.type == MoveType::PROMOTION && promotion_piece != PieceType::NONE_PIECE) {
+        undo.move.promotion_type = promotion_piece;
+    }
     undo.zobrist_hash = _zobrist.hash();
 
     _position.fullmove_number++;
