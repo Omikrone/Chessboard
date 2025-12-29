@@ -21,6 +21,7 @@ struct Move {
     int to;         // Destination of the piece
     MoveType type;  // Type of the move
     bool take;      // If the move is meant to take a piece
+    PieceType promotion_type = PieceType::NONE_PIECE;  // Promotion type if the move is a promotion
 
     bool operator==(const Move &other) const { return (this->from == other.from && this->to == other.to); }
 
@@ -32,6 +33,26 @@ struct Move {
         move.to = (uci[3] - '1') * 8 + (uci[2] - 'a');
         move.type = MoveType::NORMAL;
         move.take = false;
+        if (uci.length() == 5) {
+            move.type = MoveType::PROMOTION;
+            switch (uci[4]) {
+                case 'q':
+                    move.promotion_type = PieceType::QUEEN;
+                    break;
+                case 'r':
+                    move.promotion_type = PieceType::ROOK;
+                    break;
+                case 'b':
+                    move.promotion_type = PieceType::BISHOP;
+                    break;
+                case 'n':
+                    move.promotion_type = PieceType::KNIGHT;
+                    break;
+                default:
+                    move.promotion_type = PieceType::NONE_PIECE;
+                    break;
+            }
+        }
         return move;
     }
 
@@ -41,6 +62,24 @@ struct Move {
         uci += ('1' + (char)(this->from / 8));
         uci += ('a' + (this->to % 8));
         uci += ('1' + (char)(this->to / 8));
+        if (this->type == MoveType::PROMOTION) {
+            switch (this->promotion_type) {
+                case PieceType::QUEEN:
+                    uci += 'q';
+                    break;
+                case PieceType::ROOK:
+                    uci += 'r';
+                    break;
+                case PieceType::BISHOP:
+                    uci += 'b';
+                    break;
+                case PieceType::KNIGHT:
+                    uci += 'n';
+                    break;
+                default:
+                    break;
+            }
+        }
         return uci;
     }
 
