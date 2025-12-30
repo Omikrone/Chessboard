@@ -1,5 +1,3 @@
-// bitboards.cpp
-
 #include "bitboards.hpp"
 
 Bitboards::Bitboards(Position &game_state) : _position(game_state) {

@@ -1,5 +1,3 @@
-// move_validator.cpp
-
 #include "rules/move_validator.hpp"
 
 MoveValidator::MoveValidator(Position &game_state, Bitboards &board, MoveExecutor &executor, MoveGenerator& generator)

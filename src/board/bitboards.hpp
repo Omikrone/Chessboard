@@ -1,5 +1,3 @@
-// bitboards.hpp
-
 #pragma once
 
 #include <bitset>

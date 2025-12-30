@@ -3,7 +3,7 @@
 
 ## Introduction
 
-- **Current version:** 1.4.0
+- **Current version:** 1.5.0
 
 This project is a simple chess game implementation in C++, optimized for performance with bitboards. It is intended to be the main library of the (chess game)[https://github.com/Omikrone/Chessgame], and the chess engine (Euphron)[https://github.com/Omikrone/Euphron]. It is designed to be as fast as possible, and has achieved the following performance metrics compared to a naive implementation (the old one):
 - **Move generation and application:** ~60 microseconds (naive: ~2000 microseconds)

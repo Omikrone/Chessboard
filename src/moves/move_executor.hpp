@@ -1,5 +1,3 @@
-// move_executor.hpp
-
 #pragma once
 
 #include "board/bitboards.hpp"

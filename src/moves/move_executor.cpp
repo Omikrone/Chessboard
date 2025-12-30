@@ -1,5 +1,3 @@
-// move_executor.hpp
-
 #include "move_executor.hpp"
 
 MoveExecutor::MoveExecutor(GameHistory &history, Position &state, Bitboards &board, Zobrist &zobrist)

@@ -1,5 +1,3 @@
-// game.hpp
-
 #pragma once
 
 #include <optional>
@@ -98,6 +96,11 @@ class Game {
      */
     std::vector<Move> get_legal_moves();
 
+    /**
+     * @brief Generates all capture and check moves for a side of the chessboard.
+     *
+     * @return A vector of the moves.
+     */
     std::vector<Move> get_capture_and_check_moves();
 
     /**

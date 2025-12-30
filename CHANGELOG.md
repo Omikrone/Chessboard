@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2025-12-30
+
+### Added
+- Public function to get only capture mives & moves that checks the opponent king (for quiescence search)
+- Pre-computed move tables for king, knight and pawn
+- UCI format move parsing (with promotion indicator)
+
+### Fixed
+- Fixed illegal rook diagonals moves
+- Fixed bitboards corruption due to bad castling rights update
+
+
 ## [1.4.0] - 2025-12-07
 
 ### Added

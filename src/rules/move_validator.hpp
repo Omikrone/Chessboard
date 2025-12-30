@@ -1,5 +1,3 @@
-// move_validator.hpp
-
 #pragma once
 
 #include <bit>
@@ -63,6 +61,13 @@ class MoveValidator {
      */
     bool is_legal(const Move &move);
     
+    /**
+     * @brief Checks if a move is legal or not and if it results in a check.
+     *
+     * @param move The move to check.
+     * @return A pair where the first element is true if the move is legal, else false,
+     *         and the second element is true if the move results in a check, else false.
+     */
     std::pair<bool, bool> is_legal_and_check(const Move &move);
 
     /**
