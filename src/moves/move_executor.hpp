@@ -1,8 +1,4 @@
-// move_executor.hpp
-
 #pragma once
-
-#include <optional>
 
 #include "board/bitboards.hpp"
 #include "board/zobrist.hpp"
@@ -103,7 +99,7 @@ class MoveExecutor {
      * @param side Player which wants to apply the move.
      * @param move The move to apply.
      */
-    void make_move(const Color side, const Move &move, const std::optional<PieceType> promotion_piece = std::nullopt);
+    void make_move(const Color side, const Move &move, const PieceType promotion_piece = PieceType::NONE_PIECE);
 
     /**
      * @brief Cancels the last move made and restores the previous game state

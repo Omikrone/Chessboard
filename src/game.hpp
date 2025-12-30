@@ -1,5 +1,3 @@
-// game.hpp
-
 #pragma once
 
 #include <optional>
@@ -25,6 +23,7 @@ class Game {
     Bitboards _board;
     GameHistory _history;
     Zobrist _zobrist;
+    MoveGenerator _generator;
     MoveExecutor _executor;
     MoveValidator _validator;
 
@@ -39,7 +38,7 @@ class Game {
      * @param move Move to apply.
      * @return true if the move is legal, else false.
      */
-    bool try_apply_move(const int from, const int to, const std::optional<PieceType> promotion_piece = std::nullopt);
+    bool try_apply_move(Move const &move);
 
     /**
      * @brief Switch the current turn.
@@ -96,6 +95,13 @@ class Game {
      * @return A vector of the moves.
      */
     std::vector<Move> get_legal_moves();
+
+    /**
+     * @brief Generates all capture and check moves for a side of the chessboard.
+     *
+     * @return A vector of the moves.
+     */
+    std::vector<Move> get_capture_and_check_moves();
 
     /**
      * @brief Gets the board of the game.

@@ -1,5 +1,3 @@
-// move.hpp
-
 #pragma once
 
 #include <cstdint>
@@ -21,27 +19,82 @@ struct Move {
     int to;         // Destination of the piece
     MoveType type;  // Type of the move
     bool take;      // If the move is meant to take a piece
+    PieceType promotion_type = PieceType::NONE_PIECE;  // Promotion type if the move is a promotion
 
     bool operator==(const Move &other) const { return (this->from == other.from && this->to == other.to); }
 
+    bool operator!=(const Move &other) const { return (this->from != other.from || this->to != other.to); }
+
+    /**
+     * @brief Creates a Move from its UCI notation.
+     *
+     * @param uci The UCI notation of the move.
+     * @return The corresponding Move.
+     */
     static Move from_uci(const std::string &uci) {
         Move move;
         move.from = (uci[1] - '1') * 8 + (uci[0] - 'a');
         move.to = (uci[3] - '1') * 8 + (uci[2] - 'a');
         move.type = MoveType::NORMAL;
         move.take = false;
+        if (uci.length() == 5) {
+            move.type = MoveType::PROMOTION;
+            switch (uci[4]) {
+                case 'q':
+                    move.promotion_type = PieceType::QUEEN;
+                    break;
+                case 'r':
+                    move.promotion_type = PieceType::ROOK;
+                    break;
+                case 'b':
+                    move.promotion_type = PieceType::BISHOP;
+                    break;
+                case 'n':
+                    move.promotion_type = PieceType::KNIGHT;
+                    break;
+                default:
+                    move.promotion_type = PieceType::NONE_PIECE;
+                    break;
+            }
+        }
         return move;
     }
 
+    /**
+     * @brief Converts the Move to its UCI notation.
+     *
+     * @return A string representing the UCI notation of the move.
+     */
     std::string to_uci() const {
         std::string uci;
         uci += ('a' + (this->from % 8));
         uci += ('1' + (char)(this->from / 8));
         uci += ('a' + (this->to % 8));
         uci += ('1' + (char)(this->to / 8));
+        if (this->type == MoveType::PROMOTION) {
+            switch (this->promotion_type) {
+                case PieceType::QUEEN:
+                    uci += 'q';
+                    break;
+                case PieceType::ROOK:
+                    uci += 'r';
+                    break;
+                case PieceType::BISHOP:
+                    uci += 'b';
+                    break;
+                case PieceType::KNIGHT:
+                    uci += 'n';
+                    break;
+                default:
+                    break;
+            }
+        }
         return uci;
     }
 
+    /**
+     * @brief Prints the move to the standard output.
+     */
     void print() const {
         std::cout << "{" << std::to_string(this->from) << " : " << std::to_string(this->to) << "}" << std::endl;
     }

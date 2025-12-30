@@ -1,5 +1,3 @@
-// game_history.hpp
-
 #pragma once
 
 #include <cassert>

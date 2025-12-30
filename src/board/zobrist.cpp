@@ -1,5 +1,3 @@
-// zobrist.cpp
-
 #include "zobrist.hpp"
 
 Zobrist::Zobrist(Position &position, Bitboards &board) : _position(position), _board(board) {

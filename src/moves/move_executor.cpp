@@ -1,11 +1,9 @@
-// move_executor.hpp
-
 #include "move_executor.hpp"
 
 MoveExecutor::MoveExecutor(GameHistory &history, Position &state, Bitboards &board, Zobrist &zobrist)
     : _history(history), _position(state), _board(board), _zobrist(zobrist) {}
 
-void MoveExecutor::make_move(const Color side, const Move &move, const std::optional<PieceType> promotion_piece) {
+void MoveExecutor::make_move(const Color side, const Move &move, const PieceType promotion_piece) {
     UndoMove undo;
     undo.castling_rights = _position.castling_rights;
     undo.fullmove_number = _position.fullmove_number;
@@ -25,10 +23,8 @@ void MoveExecutor::make_move(const Color side, const Move &move, const std::opti
             break;
         case MoveType::PROMOTION:
             normal(undo, side, move);
-            if (promotion_piece.has_value())
-                promotion(side, move.to, promotion_piece.value());
-            else
-                promotion(side, move.to, PieceType::QUEEN);
+            if (promotion_piece == PieceType::NONE_PIECE) promotion(side, move.to, PieceType::QUEEN);
+            else promotion(side, move.to, promotion_piece);
             break;
         default:
             normal(undo, side, move);
@@ -50,6 +46,9 @@ void MoveExecutor::make_move(const Color side, const Move &move, const std::opti
         _position.halfmove_clock++;
 
     undo.move = move;
+    if (move.type == MoveType::PROMOTION && promotion_piece != PieceType::NONE_PIECE) {
+        undo.move.promotion_type = promotion_piece;
+    }
     undo.zobrist_hash = _zobrist.hash();
 
     _position.fullmove_number++;
@@ -92,6 +91,20 @@ void MoveExecutor::normal(UndoMove &undo, const Color side, const Move &move) {
         PieceType opponent_piece = _board.get_piece_type(opponent_color, move.to);
         undo.taken_piece = opponent_piece;
         _board.remove_piece(opponent_color, opponent_piece, move.to);
+        switch (move.to) {
+            case 0:
+                _position.castling_rights &= ~(1 << 1);
+                break;
+            case 7:
+                _position.castling_rights &= ~(1 << 0);
+                break;
+            case 56:
+                _position.castling_rights &= ~(1 << 3);
+                break;
+            case 63:
+                _position.castling_rights &= ~(1 << 2);
+                break;
+        }
     }
     PieceType piece_type = _board.get_piece_type(side, move.from);
     _board.move_piece(side, piece_type, move.from, move.to);

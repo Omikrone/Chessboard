@@ -1,5 +1,3 @@
-// zobrist.hpp
-
 #pragma once
 
 #include <ctime>

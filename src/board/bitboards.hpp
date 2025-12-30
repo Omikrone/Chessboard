@@ -1,5 +1,3 @@
-// bitboards.hpp
-
 #pragma once
 
 #include <bitset>
@@ -109,4 +107,10 @@ class Bitboards {
      * @param bb The bitboard to print.
      */
     void print_board(uint64_t bb) const;
+
+    /**
+     * @brief Prints all piece bitboards for debugging.
+     *
+     */
+    void print_all_boards() const;
 };
